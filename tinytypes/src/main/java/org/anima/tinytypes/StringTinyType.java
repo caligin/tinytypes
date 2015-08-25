@@ -28,4 +28,9 @@ public abstract class StringTinyType {
         return this.value.equals(other.value);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s#%s", this.getClass().getSimpleName(), value);
+    }
+
 }

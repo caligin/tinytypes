@@ -26,4 +26,18 @@ public class StringTinyTypeTest {
         Assert.assertNotEquals(lhs, rhs);
     }
 
+    @Test
+    public void toStringContainsTTName() {
+        final String expected = "Str";
+        final String toString = Samples.Str.of("1").toString();
+        Assert.assertTrue(toString.contains(expected));
+    }
+
+    @Test
+    public void toStringContainsTTValue() {
+        final String expected = "1";
+        final String toString = Samples.Str.of("1").toString();
+        Assert.assertTrue(toString.contains(expected));
+    }
+
 }

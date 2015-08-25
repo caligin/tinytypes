@@ -26,4 +26,18 @@ public class IntTinyTypeTest {
         Assert.assertNotEquals(lhs, rhs);
     }
 
+    @Test
+    public void toStringContainsTTName() {
+        final String expected = "Integer";
+        final String toString = Samples.Integer.of(1).toString();
+        Assert.assertTrue(toString.contains(expected));
+    }
+
+    @Test
+    public void toStringContainsTTValue() {
+        final String expected = "1";
+        final String toString = Samples.Integer.of(1).toString();
+        Assert.assertTrue(toString.contains(expected));
+    }
+
 }
