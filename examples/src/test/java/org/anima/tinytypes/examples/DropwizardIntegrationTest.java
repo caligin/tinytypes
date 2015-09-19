@@ -1,5 +1,7 @@
 package org.anima.tinytypes.examples;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.anima.tinytypes.jersey.StringTTJsonBodyWriter;
 import org.anima.tinytypes.jersey.IntTTJsonBodyWriter;
 import org.anima.tinytypes.jersey.JerseyResponseSupport;
@@ -59,6 +61,48 @@ public class DropwizardIntegrationTest {
 
     }
 
+    public static class DtoWithStringTT {
+
+        private final Samples.Str id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithStringTT(@JsonProperty("id") Samples.Str id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Str getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
+    public static class DtoWithIntTT {
+
+        private final Samples.Integer id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithIntTT(@JsonProperty("id") Samples.Integer id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Integer getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
     @Path("/")
     public static class TinyTypesResource {
 
@@ -73,6 +117,13 @@ public class DropwizardIntegrationTest {
         @Consumes(MediaType.APPLICATION_JSON)
         public void strReqBody(Samples.Str str) {
             spy.put(Samples.Str.class, str);
+        }
+
+        @POST
+        @Path("str/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void strNestedReqBody(DtoWithStringTT str) {
+            spy.put(Samples.Str.class, str.id);
         }
 
         @GET
@@ -107,6 +158,13 @@ public class DropwizardIntegrationTest {
         }
 
         @GET
+        @Path("str/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithStringTT strNestedRespBody() {
+            return new DtoWithStringTT(new Samples.Str("asd"), "qwe");
+        }
+
+        @GET
         @Path("str/respheader")
         public Response strRespHeader() {
             return Response.ok().header("test", new Samples.Str("asd")).build();
@@ -123,6 +181,13 @@ public class DropwizardIntegrationTest {
         @Consumes(MediaType.APPLICATION_JSON)
         public void intReqBody(Samples.Integer tt) {
             spy.put(Samples.Integer.class, tt);
+        }
+
+        @POST
+        @Path("int/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void strNestedReqBody(DtoWithIntTT dto) {
+            spy.put(Samples.Integer.class, dto.id);
         }
 
         @GET
@@ -157,6 +222,13 @@ public class DropwizardIntegrationTest {
         }
 
         @GET
+        @Path("int/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithIntTT intNestedRespBody() {
+            return new DtoWithIntTT(new Samples.Integer(1), "qwe");
+        }
+
+        @GET
         @Path("int/respheader")
         public Response intRespHeader() {
             return Response.ok().header("test", new Samples.Integer(1)).build();
@@ -176,6 +248,18 @@ public class DropwizardIntegrationTest {
         resource
                 .client()
                 .target("/str/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Str.class));
+    }
+
+    @Test
+    public void canDeserializeStringTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":\"asd\",\"somedata\":\"blah\"}";
+        final Samples.Str expected = new Samples.Str("asd");
+        resource
+                .client()
+                .target("/str/nestedreqbody")
                 .request()
                 .post(Entity.entity(value, MediaType.APPLICATION_JSON));
         Assert.assertEquals(expected, spy.get(Samples.Str.class));
@@ -240,6 +324,18 @@ public class DropwizardIntegrationTest {
     }
 
     @Test
+    public void canSerializeStringTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":\"asd\",\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/str/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
     public void canSerializeStringTTAsRespHeader() {
         final String expected = "asd";
         final Response req = resource
@@ -272,6 +368,18 @@ public class DropwizardIntegrationTest {
         resource
                 .client()
                 .target("/int/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Integer.class));
+    }
+
+    @Test
+    public void canDeserializeIntTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":\"blah\"}";
+        final Samples.Integer expected = new Samples.Integer(1);
+        resource
+                .client()
+                .target("/int/nestedreqbody")
                 .request()
                 .post(Entity.entity(value, MediaType.APPLICATION_JSON));
         Assert.assertEquals(expected, spy.get(Samples.Integer.class));
@@ -329,6 +437,18 @@ public class DropwizardIntegrationTest {
         final Response req = resource
                 .client()
                 .target("/int/respbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeIntTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":1,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/int/nestedrespbody")
                 .request()
                 .get();
         final String rawBody = req.readEntity(String.class);
