@@ -10,7 +10,7 @@ public abstract class ByteTinyType {
 
     @Override
     public int hashCode() {
-        return Byte.hashCode(value);
+        return (int) value; //as per implementation of Byte::hashCode(byte) in jdk8.0.45
     }
 
     @Override

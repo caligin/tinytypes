@@ -10,7 +10,7 @@ public abstract class IntTinyType {
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(value);
+        return value;  //as per implementation of Integer::hashCode(int) in jdk8.0.45
     }
 
     @Override

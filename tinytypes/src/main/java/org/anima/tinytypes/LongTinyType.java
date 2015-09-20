@@ -10,7 +10,7 @@ public abstract class LongTinyType {
 
     @Override
     public int hashCode() {
-        return Long.hashCode(value);
+        return (int) (value ^ (value >>> 32)); //as per implementation of Long::hashCode(long) in jdk8.0.45
     }
 
     @Override

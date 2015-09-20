@@ -10,7 +10,7 @@ public abstract class BooleanTinyType {
 
     @Override
     public int hashCode() {
-        return Boolean.hashCode(value);
+        return value ? 1231 : 1237; //as per implementation of Boolean::hashCode(boolean) in jdk8.0.45
     }
 
     @Override

@@ -10,7 +10,7 @@ public abstract class ShortTinyType {
 
     @Override
     public int hashCode() {
-        return Short.hashCode(value);
+        return (int) value; //as per implementation of Short::hashCode(short) in jdk8.0.45
     }
 
     @Override
