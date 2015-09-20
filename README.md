@@ -1,5 +1,7 @@
 # TinyTypes
 
+[![Build Status](https://travis-ci.org/caligin/tinytypes.svg?branch=master)](https://travis-ci.org/caligin/tinytypes)
+
 ## What
 
 Type safe wrappers on native types.
