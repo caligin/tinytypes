@@ -1,0 +1,9 @@
+language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk8
+script:
+  - mvn -f tinytypes/pom.xml clean install
+  - mvn -f examples/pom.xml clean install
+sudo: false
