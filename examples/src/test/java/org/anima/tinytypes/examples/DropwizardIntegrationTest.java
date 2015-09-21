@@ -11,6 +11,7 @@ import org.anima.tinytypes.jersey.StringTTParamProvider;
 import org.anima.tinytypes.jersey.IntTTParamProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -132,6 +133,13 @@ public class DropwizardIntegrationTest {
             spy.put(Samples.Str.class, str.id);
         }
 
+        @POST
+        @Path("str/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void strMapReqBody(Map<String, Object> map) {
+            spy.put(Samples.Str.class, map.get("id"));
+        }
+
         @GET
         @Path("str/queryparam")
         public void strQueryParam(@QueryParam("test") Samples.Str str) {
@@ -171,6 +179,16 @@ public class DropwizardIntegrationTest {
         }
 
         @GET
+        @Path("str/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> strMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Str("asd"));
+            map.put("somedata", "qwe");
+            return map;
+        }
+
+        @GET
         @Path("str/respheader")
         public Response strRespHeader() {
             return Response.ok().header("test", new Samples.Str("asd")).build();
@@ -192,8 +210,15 @@ public class DropwizardIntegrationTest {
         @POST
         @Path("int/nestedreqbody")
         @Consumes(MediaType.APPLICATION_JSON)
-        public void strNestedReqBody(DtoWithIntTT dto) {
+        public void intNestedReqBody(DtoWithIntTT dto) {
             spy.put(Samples.Integer.class, dto.id);
+        }
+
+        @POST
+        @Path("int/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void intMapReqBody(Map<String, Object> map) {
+            spy.put(Samples.Integer.class, map.get("id"));
         }
 
         @GET
@@ -235,6 +260,16 @@ public class DropwizardIntegrationTest {
         }
 
         @GET
+        @Path("int/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> intMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Integer(1));
+            map.put("somedata", "qwe");
+            return map;
+        }
+
+        @GET
         @Path("int/respheader")
         public Response intRespHeader() {
             return Response.ok().header("test", new Samples.Integer(1)).build();
@@ -266,6 +301,18 @@ public class DropwizardIntegrationTest {
         resource
                 .client()
                 .target("/str/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Str.class));
+    }
+
+    @Test
+    public void canDeserializeStringTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":\"asd\",\"somedata\":\"blah\"}";
+        final Samples.Str expected = new Samples.Str("asd");
+        resource
+                .client()
+                .target("/str/mapreqbody")
                 .request()
                 .post(Entity.entity(value, MediaType.APPLICATION_JSON));
         Assert.assertEquals(expected, spy.get(Samples.Str.class));
@@ -342,6 +389,18 @@ public class DropwizardIntegrationTest {
     }
 
     @Test
+    public void canSerializeStringTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":\"asd\",\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/str/maprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
     public void canSerializeStringTTAsRespHeader() {
         final String expected = "asd";
         final Response req = resource
@@ -386,6 +445,18 @@ public class DropwizardIntegrationTest {
         resource
                 .client()
                 .target("/int/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Integer.class));
+    }
+
+    @Test
+    public void canDeserializeIntTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":\"blah\"}";
+        final Samples.Integer expected = new Samples.Integer(1);
+        resource
+                .client()
+                .target("/int/mapreqbody")
                 .request()
                 .post(Entity.entity(value, MediaType.APPLICATION_JSON));
         Assert.assertEquals(expected, spy.get(Samples.Integer.class));
@@ -455,6 +526,18 @@ public class DropwizardIntegrationTest {
         final Response req = resource
                 .client()
                 .target("/int/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeIntTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":1,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/int/maprespbody")
                 .request()
                 .get();
         final String rawBody = req.readEntity(String.class);
