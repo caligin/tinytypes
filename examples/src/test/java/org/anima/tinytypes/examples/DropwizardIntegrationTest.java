@@ -1,7 +1,9 @@
 package org.anima.tinytypes.examples;
 
+import org.anima.tinytypes.jackson.TinyTypesModule;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.dropwizard.jackson.Jackson;
 import org.anima.tinytypes.jersey.StringTTJsonBodyWriter;
 import org.anima.tinytypes.jersey.IntTTJsonBodyWriter;
 import org.anima.tinytypes.jersey.JerseyResponseSupport;
@@ -42,6 +44,10 @@ public class DropwizardIntegrationTest {
             .addProvider(StringTTJsonBodyWriter.class)
             .addProvider(IntTTParamProvider.class)
             .addProvider(IntTTJsonBodyWriter.class)
+            .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
+                                    Samples.Str.class,
+                                    Samples.Integer.class
+                            )))
             .build();
 
     @Before
