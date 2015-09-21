@@ -21,7 +21,11 @@ public final class TinyTypesModule extends Module {
     @Override
     public void setupModule(SetupContext context) {
         context.addSerializers(new StringTinyTypesSerializers());
+        context.addKeySerializers(new StringTinyTypesKeySerializers());
+        context.addKeyDeserializers(new StringTinyTypesKeyDeserializers());
         context.addSerializers(new IntTinyTypesSerializers());
+        context.addKeySerializers(new IntTinyTypesKeySerializers());
+        context.addKeyDeserializers(new IntTinyTypesKeyDeserializers());
     }
 
 }

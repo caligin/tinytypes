@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.anima.tinytypes.IntTinyType;
 
 public class IntTinyTypeSerializer<T extends IntTinyType> extends JsonSerializer<T> {
+
     private final Class<T> type;
 
     public IntTinyTypeSerializer(Class<T> type) {
