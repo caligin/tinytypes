@@ -191,7 +191,6 @@ public class DropwizardIntegrationTest {
         public Map<String, Object> strMapRespBody() {
             final Map<String, Object> map = new HashMap<>();
             map.put("id", new Samples.Str("asd"));
-            map.put("somedata", "qwe");
             return map;
         }
 
@@ -288,7 +287,6 @@ public class DropwizardIntegrationTest {
         public Map<String, Object> intMapRespBody() {
             final Map<String, Object> map = new HashMap<>();
             map.put("id", new Samples.Integer(1));
-            map.put("somedata", "qwe");
             return map;
         }
 
@@ -434,7 +432,7 @@ public class DropwizardIntegrationTest {
 
     @Test
     public void canSerializeStringTTWhenValueInMapRespBody() {
-        final String expected = "{\"somedata\":\"qwe\",\"id\":\"asd\"}";
+        final String expected = "{\"id\":\"asd\"}";
         final Response req = resource
                 .client()
                 .target("/str/maprespbody")
@@ -602,7 +600,7 @@ public class DropwizardIntegrationTest {
 
     @Test
     public void canSerializeIntTTWhenValueInMapRespBody() {
-        final String expected = "{\"somedata\":\"qwe\",\"id\":1}";
+        final String expected = "{\"id\":1}";
         final Response req = resource
                 .client()
                 .target("/int/maprespbody")
