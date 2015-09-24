@@ -24,6 +24,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import org.anima.tinytypes.jersey.ByteTTParamProvider;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.After;
 import org.junit.Assert;
@@ -41,9 +42,11 @@ public class DropwizardIntegrationTest {
             .addResource(new TinyTypesResource(spy))
             .addProvider(StringTTParamProvider.class)
             .addProvider(IntTTParamProvider.class)
+            .addProvider(ByteTTParamProvider.class)
             .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
                                     Samples.Str.class,
-                                    Samples.Integer.class
+                                    Samples.Integer.class,
+                                    Samples.Byte.class
                             )))
             .build();
 
@@ -51,7 +54,8 @@ public class DropwizardIntegrationTest {
     public void setupDelegates() throws Exception {
         JerseyResponseSupport.registerTinyTypes(
                 Samples.Str.class,
-                Samples.Integer.class
+                Samples.Integer.class,
+                Samples.Byte.class
         );
     }
 
@@ -97,6 +101,27 @@ public class DropwizardIntegrationTest {
         }
 
         public Samples.Integer getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
+    public static class DtoWithByteTT {
+
+        private final Samples.Byte id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithByteTT(@JsonProperty("id") Samples.Byte id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Byte getId() {
             return id;
         }
 
@@ -305,6 +330,102 @@ public class DropwizardIntegrationTest {
         @Path("int/uripath")
         public Response intLocationHeaderWithUriBuilder() {
             return Response.temporaryRedirect(UriBuilder.fromPath("/{int}").build(new Samples.Integer(1))).build();
+        }
+
+        @POST
+        @Path("byte/reqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void byteReqBody(Samples.Byte tt) {
+            spy.put(Samples.Byte.class, tt);
+        }
+
+        @POST
+        @Path("byte/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void byteNestedReqBody(DtoWithByteTT dto) {
+            spy.put(Samples.Byte.class, dto.id);
+        }
+
+        @POST
+        @Path("byte/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void byteMapReqBody(Map<String, Samples.Byte> map) {
+            spy.put(Samples.Byte.class, map.get("id"));
+        }
+
+        @POST
+        @Path("byte/keyinmapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void byteKeyInMapReqBody(Map<Samples.Byte, Object> map) {
+            spy.put(Samples.Byte.class, map.keySet().iterator().next());
+        }
+
+        @GET
+        @Path("byte/queryparam")
+        public void byteQueryParam(@QueryParam("test") Samples.Byte tt) {
+            spy.put(Samples.Byte.class, tt);
+        }
+
+        @GET
+        @Path("byte/pathparam/{test}")
+        public void bytePathParam(@PathParam("test") Samples.Byte tt) {
+            spy.put(Samples.Byte.class, tt);
+        }
+
+        @POST
+        @Path("byte/formparam")
+        public void byteFormParam(@FormParam("test") Samples.Byte tt) {
+            spy.put(Samples.Byte.class, tt);
+        }
+
+        @GET
+        @Path("byte/reqheader")
+        public void byteReqHeader(@HeaderParam("test") Samples.Byte tt) {
+            spy.put(Samples.Byte.class, tt);
+        }
+
+        @GET
+        @Path("byte/respbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Samples.Byte byteRespBody() {
+            return new Samples.Byte((byte) 1);
+        }
+
+        @GET
+        @Path("byte/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithByteTT byteNestedRespBody() {
+            return new DtoWithByteTT(new Samples.Byte((byte) 1), "qwe");
+        }
+
+        @GET
+        @Path("byte/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> byteMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Byte((byte) 1));
+            return map;
+        }
+
+        @GET
+        @Path("byte/keyinmaprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<Samples.Byte, Object> byteKeyInMapRespBody() {
+            final Map<Samples.Byte, Object> map = new HashMap<>();
+            map.put(new Samples.Byte((byte) 1), "qwe");
+            return map;
+        }
+
+        @GET
+        @Path("byte/respheader")
+        public Response byteRespHeader() {
+            return Response.ok().header("test", new Samples.Byte((byte) 1)).build();
+        }
+
+        @GET
+        @Path("byte/uripath")
+        public Response byteLocationHeaderWithUriBuilder() {
+            return Response.temporaryRedirect(UriBuilder.fromPath("/{byte}").build(new Samples.Byte((byte) 1))).build();
         }
     }
 
@@ -638,6 +759,174 @@ public class DropwizardIntegrationTest {
                 .client()
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .target("/int/uripath")
+                .request()
+                .get();
+        final String path = req.getLocation().getPath();
+        Assert.assertEquals(expected, path);
+    }
+
+    @Test
+    public void canDeserializeByteTTAsRequestBody() {
+        final String value = "1";
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":\"blah\"}";
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":2}";
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/mapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTWhenKeyOfMapRequestBody() {
+        final String value = "{\"1\":\"blah\"}";
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/keyinmapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTAsQueryParam() {
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/queryparam")
+                .queryParam("test", 1)
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTAsPathParam() {
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/pathparam/1")
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTAsFormParam() {
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/formparam")
+                .request()
+                .post(Entity.form(new Form("test", "1")));
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canDeserializeByteTTAsReqHeader() {
+        final Samples.Byte expected = new Samples.Byte((byte) 1);
+        resource
+                .client()
+                .target("/byte/reqheader")
+                .request()
+                .header("test", 1)
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Byte.class));
+    }
+
+    @Test
+    public void canSerializeByteTTAsRespBody() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/byte/respbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeByteTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":1,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/byte/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeByteTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":1}";
+        final Response req = resource
+                .client()
+                .target("/byte/maprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeByteTTWhenKeyOfMapRespBody() {
+        final String expected = "{\"1\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/byte/keyinmaprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeByteTTAsRespHeader() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/byte/respheader")
+                .request()
+                .get();
+        final String header = req.getHeaderString("test");
+        Assert.assertEquals(expected, header);
+    }
+
+    @Test
+    @Ignore(value = "no way to provide UriBuilder with a transformation for the value, it just calls toString.")
+    public void canSerializeByteTTAsPartOfUri() {
+        final String expected = "/1";
+        final Response req = resource
+                .client()
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
+    .target("/byte/uripath")
                 .request()
                 .get();
         final String path = req.getLocation().getPath();

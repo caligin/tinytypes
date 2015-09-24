@@ -3,6 +3,7 @@ package org.anima.tinytypes.jersey;
 import java.lang.reflect.Field;
 import java.util.Set;
 import javax.ws.rs.ext.RuntimeDelegate;
+import org.anima.tinytypes.ByteTinyType;
 import org.anima.tinytypes.IntTinyType;
 import org.anima.tinytypes.StringTinyType;
 import org.glassfish.jersey.internal.AbstractRuntimeDelegate;
@@ -27,6 +28,10 @@ public class JerseyResponseSupport {
         }
         if (IntTinyType.class.equals(kind)) {
             systemRegisteredHeaderProviders.add(new IntTTHeaderDelegateProvider(tt));
+            return;
+        }
+        if (ByteTinyType.class.equals(kind)) {
+            systemRegisteredHeaderProviders.add(new ByteTTHeaderDelegateProvider(tt));
             return;
         }
         throw new IllegalArgumentException(String.format("Not a supported TinyType: %s", tt.getCanonicalName()));
