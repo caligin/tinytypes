@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.anima.tinytypes.jersey.ByteTTParamProvider;
+import org.anima.tinytypes.jersey.LongTTParamProvider;
 import org.anima.tinytypes.jersey.ShortTTParamProvider;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.After;
@@ -45,11 +46,13 @@ public class DropwizardIntegrationTest {
             .addProvider(IntTTParamProvider.class)
             .addProvider(ByteTTParamProvider.class)
             .addProvider(ShortTTParamProvider.class)
+            .addProvider(LongTTParamProvider.class)
             .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
                                     Samples.Str.class,
                                     Samples.Integer.class,
                                     Samples.Byte.class,
-                                    Samples.Short.class
+                                    Samples.Short.class,
+                                    Samples.Long.class
                             )))
             .build();
 
@@ -59,7 +62,8 @@ public class DropwizardIntegrationTest {
                 Samples.Str.class,
                 Samples.Integer.class,
                 Samples.Byte.class,
-                Samples.Short.class
+                Samples.Short.class,
+                Samples.Long.class
         );
     }
 
@@ -147,6 +151,27 @@ public class DropwizardIntegrationTest {
         }
 
         public Samples.Short getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
+    public static class DtoWithLongTT {
+
+        private final Samples.Long id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithLongTT(@JsonProperty("id") Samples.Long id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Long getId() {
             return id;
         }
 
@@ -547,6 +572,102 @@ public class DropwizardIntegrationTest {
         @Path("short/uripath")
         public Response shortLocationHeaderWithUriBuilder() {
             return Response.temporaryRedirect(UriBuilder.fromPath("/{short}").build(new Samples.Short((short) 1))).build();
+        }
+
+        @POST
+        @Path("long/reqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void longReqBody(Samples.Long tt) {
+            spy.put(Samples.Long.class, tt);
+        }
+
+        @POST
+        @Path("long/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void longNestedReqBody(DtoWithLongTT dto) {
+            spy.put(Samples.Long.class, dto.id);
+        }
+
+        @POST
+        @Path("long/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void longMapReqBody(Map<String, Samples.Long> map) {
+            spy.put(Samples.Long.class, map.get("id"));
+        }
+
+        @POST
+        @Path("long/keyinmapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void longKeyInMapReqBody(Map<Samples.Long, Object> map) {
+            spy.put(Samples.Long.class, map.keySet().iterator().next());
+        }
+
+        @GET
+        @Path("long/queryparam")
+        public void longQueryParam(@QueryParam("test") Samples.Long tt) {
+            spy.put(Samples.Long.class, tt);
+        }
+
+        @GET
+        @Path("long/pathparam/{test}")
+        public void longPathParam(@PathParam("test") Samples.Long tt) {
+            spy.put(Samples.Long.class, tt);
+        }
+
+        @POST
+        @Path("long/formparam")
+        public void longFormParam(@FormParam("test") Samples.Long tt) {
+            spy.put(Samples.Long.class, tt);
+        }
+
+        @GET
+        @Path("long/reqheader")
+        public void longReqHeader(@HeaderParam("test") Samples.Long tt) {
+            spy.put(Samples.Long.class, tt);
+        }
+
+        @GET
+        @Path("long/respbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Samples.Long longRespBody() {
+            return new Samples.Long((long) 1);
+        }
+
+        @GET
+        @Path("long/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithLongTT longNestedRespBody() {
+            return new DtoWithLongTT(new Samples.Long((long) 1), "qwe");
+        }
+
+        @GET
+        @Path("long/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> longMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Long((long) 1));
+            return map;
+        }
+
+        @GET
+        @Path("long/keyinmaprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<Samples.Long, Object> longKeyInMapRespBody() {
+            final Map<Samples.Long, Object> map = new HashMap<>();
+            map.put(new Samples.Long((long) 1), "qwe");
+            return map;
+        }
+
+        @GET
+        @Path("long/respheader")
+        public Response longRespHeader() {
+            return Response.ok().header("test", new Samples.Long((long) 1)).build();
+        }
+
+        @GET
+        @Path("long/uripath")
+        public Response longLocationHeaderWithUriBuilder() {
+            return Response.temporaryRedirect(UriBuilder.fromPath("/{long}").build(new Samples.Long((long) 1))).build();
         }
     }
 
@@ -1216,6 +1337,174 @@ public class DropwizardIntegrationTest {
                 .client()
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .target("/short/uripath")
+                .request()
+                .get();
+        final String path = req.getLocation().getPath();
+        Assert.assertEquals(expected, path);
+    }
+
+    @Test
+    public void canDeserializeLongTTAsRequestBody() {
+        final String value = "1";
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":\"blah\"}";
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":2}";
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/mapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTWhenKeyOfMapRequestBody() {
+        final String value = "{\"1\":\"blah\"}";
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/keyinmapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTAsQueryParam() {
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/queryparam")
+                .queryParam("test", 1)
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTAsPathParam() {
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/pathparam/1")
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTAsFormParam() {
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/formparam")
+                .request()
+                .post(Entity.form(new Form("test", "1")));
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canDeserializeLongTTAsReqHeader() {
+        final Samples.Long expected = new Samples.Long((long) 1);
+        resource
+                .client()
+                .target("/long/reqheader")
+                .request()
+                .header("test", 1)
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Long.class));
+    }
+
+    @Test
+    public void canSerializeLongTTAsRespBody() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/long/respbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeLongTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":1,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/long/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeLongTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":1}";
+        final Response req = resource
+                .client()
+                .target("/long/maprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeLongTTWhenKeyOfMapRespBody() {
+        final String expected = "{\"1\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/long/keyinmaprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeLongTTAsRespHeader() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/long/respheader")
+                .request()
+                .get();
+        final String header = req.getHeaderString("test");
+        Assert.assertEquals(expected, header);
+    }
+
+    @Test
+    @Ignore(value = "no way to provide UriBuilder with a transformation for the value, it just calls toString.")
+    public void canSerializeLongTTAsPartOfUri() {
+        final String expected = "/1";
+        final Response req = resource
+                .client()
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
+                .target("/long/uripath")
                 .request()
                 .get();
         final String path = req.getLocation().getPath();

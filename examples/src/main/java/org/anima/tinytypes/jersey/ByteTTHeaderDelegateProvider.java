@@ -21,7 +21,7 @@ public class ByteTTHeaderDelegateProvider<T extends ByteTinyType> implements Hea
 
     @Override
     public String toString(ByteTinyType value) {
-        return Integer.toString(value.value);
+        return Byte.toString(value.value);
     }
 
     @Override
