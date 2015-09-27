@@ -10,13 +10,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import java.io.IOException;
 import org.anima.tinytypes.StringTinyType;
+import org.anima.tinytypes.meta.StringTinyTypes;
 
 public class StringTinyTypesSerializers extends Serializers.Base {
 
     @Override
     public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
         Class<?> candidateTT = type.getRawClass();
-        if (StringTinyType.class.equals(candidateTT.getSuperclass())) {
+        if (StringTinyTypes.includes(candidateTT)) {
             return new StringTinyTypeSerializer();
         }
         return super.findSerializer(config, type, beanDesc);

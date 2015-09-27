@@ -10,14 +10,14 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.deser.KeyDeserializers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import org.anima.tinytypes.ShortTinyType;
+import org.anima.tinytypes.meta.ShortTinyTypes;
 
 public class ShortTinyTypesKeyDeserializers implements KeyDeserializers {
 
     @Override
     public KeyDeserializer findKeyDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) throws JsonMappingException {
         Class<?> candidateTT = type.getRawClass();
-        if (ShortTinyType.class.equals(candidateTT.getSuperclass())) {
+        if (ShortTinyTypes.includes(candidateTT)) {
             return new ShortTinyTypeKeyDeserializer(candidateTT);
         }
         return null;

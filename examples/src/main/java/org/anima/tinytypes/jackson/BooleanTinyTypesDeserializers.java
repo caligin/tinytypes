@@ -12,13 +12,14 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import org.anima.tinytypes.BooleanTinyType;
+import org.anima.tinytypes.meta.BooleanTinyTypes;
 
 public class BooleanTinyTypesDeserializers extends Deserializers.Base {
 
     @Override
     public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) throws JsonMappingException {
         Class<?> candidateTT = type.getRawClass();
-        if (BooleanTinyType.class.equals(candidateTT.getSuperclass())) {
+        if (BooleanTinyTypes.includes(candidateTT)) {
             return new BooleanTinyTypeDeserializer(candidateTT);
         }
         return null;
