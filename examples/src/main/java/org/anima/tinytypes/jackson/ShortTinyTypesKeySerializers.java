@@ -9,24 +9,24 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import java.io.IOException;
-import org.anima.tinytypes.ByteTinyType;
+import org.anima.tinytypes.ShortTinyType;
 
-public class ByteTinyTypesKeySerializers extends Serializers.Base {
+public class ShortTinyTypesKeySerializers extends Serializers.Base {
 
     @Override
     public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
         Class<?> candidateTT = type.getRawClass();
-        if (ByteTinyType.class.equals(candidateTT.getSuperclass())) {
-            return new ByteTinyTypeKeySerializer();
+        if (ShortTinyType.class.equals(candidateTT.getSuperclass())) {
+            return new ShortTinyTypeKeySerializer();
         }
         return super.findSerializer(config, type, beanDesc);
     }
 
-    public static class ByteTinyTypeKeySerializer<T extends ByteTinyType> extends JsonSerializer<T> {
+    public static class ShortTinyTypeKeySerializer<T extends ShortTinyType> extends JsonSerializer<T> {
 
         @Override
         public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
-            gen.writeFieldName(Byte.toString(value.value));
+            gen.writeFieldName(Short.toString(value.value));
         }
 
     }

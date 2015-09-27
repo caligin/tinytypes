@@ -30,6 +30,10 @@ public final class TinyTypesModule extends Module {
         context.addKeySerializers(new ByteTinyTypesKeySerializers());
         context.addDeserializers(new ByteTinyTypesDeserializers());
         context.addKeyDeserializers(new ByteTinyTypesKeyDeserializers());
+        context.addSerializers(new ShortTinyTypesSerializers());
+        context.addKeySerializers(new ShortTinyTypesKeySerializers());
+        context.addDeserializers(new ShortTinyTypesDeserializers());
+        context.addKeyDeserializers(new ShortTinyTypesKeyDeserializers());
     }
 
 }

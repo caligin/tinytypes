@@ -11,31 +11,31 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import org.anima.tinytypes.ByteTinyType;
+import org.anima.tinytypes.ShortTinyType;
 
-public class ByteTinyTypesDeserializers extends Deserializers.Base {
+public class ShortTinyTypesDeserializers extends Deserializers.Base {
 
     @Override
     public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) throws JsonMappingException {
         Class<?> candidateTT = type.getRawClass();
-        if (ByteTinyType.class.equals(candidateTT.getSuperclass())) {
-            return new ByteTinyTypeDeserializer(candidateTT);
+        if (ShortTinyType.class.equals(candidateTT.getSuperclass())) {
+            return new ShortTinyTypeDeserializer(candidateTT);
         }
         return null;
     }
 
-    public static class ByteTinyTypeDeserializer<T extends ByteTinyType> extends JsonDeserializer<T> {
+    public static class ShortTinyTypeDeserializer<T extends ShortTinyType> extends JsonDeserializer<T> {
 
         private final Class<T> rawType;
 
-        public ByteTinyTypeDeserializer(Class<T> rawType) {
+        public ShortTinyTypeDeserializer(Class<T> rawType) {
             this.rawType = rawType;
         }
 
         @Override
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             try {
-                return rawType.getConstructor(byte.class).newInstance(p.getByteValue());
+                return rawType.getConstructor(short.class).newInstance(p.getShortValue());
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }

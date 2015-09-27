@@ -9,20 +9,20 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import java.io.IOException;
-import org.anima.tinytypes.ByteTinyType;
+import org.anima.tinytypes.ShortTinyType;
 
-public class ByteTinyTypesSerializers extends Serializers.Base {
+public class ShortTinyTypesSerializers extends Serializers.Base {
 
     @Override
     public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
         Class<?> candidateTT = type.getRawClass();
-        if (ByteTinyType.class.equals(candidateTT.getSuperclass())) {
-            return new ByteTinyTypeSerializer();
+        if (ShortTinyType.class.equals(candidateTT.getSuperclass())) {
+            return new ShortTinyTypeSerializer();
         }
         return super.findSerializer(config, type, beanDesc);
     }
 
-    public class ByteTinyTypeSerializer<T extends ByteTinyType> extends JsonSerializer<T> {
+    public class ShortTinyTypeSerializer<T extends ShortTinyType> extends JsonSerializer<T> {
 
         @Override
         public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {

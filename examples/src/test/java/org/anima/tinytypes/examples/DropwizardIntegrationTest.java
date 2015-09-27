@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.anima.tinytypes.jersey.ByteTTParamProvider;
+import org.anima.tinytypes.jersey.ShortTTParamProvider;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.After;
 import org.junit.Assert;
@@ -43,10 +44,12 @@ public class DropwizardIntegrationTest {
             .addProvider(StringTTParamProvider.class)
             .addProvider(IntTTParamProvider.class)
             .addProvider(ByteTTParamProvider.class)
+            .addProvider(ShortTTParamProvider.class)
             .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
                                     Samples.Str.class,
                                     Samples.Integer.class,
-                                    Samples.Byte.class
+                                    Samples.Byte.class,
+                                    Samples.Short.class
                             )))
             .build();
 
@@ -55,7 +58,8 @@ public class DropwizardIntegrationTest {
         JerseyResponseSupport.registerTinyTypes(
                 Samples.Str.class,
                 Samples.Integer.class,
-                Samples.Byte.class
+                Samples.Byte.class,
+                Samples.Short.class
         );
     }
 
@@ -122,6 +126,27 @@ public class DropwizardIntegrationTest {
         }
 
         public Samples.Byte getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
+    public static class DtoWithShortTT {
+
+        private final Samples.Short id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithShortTT(@JsonProperty("id") Samples.Short id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Short getId() {
             return id;
         }
 
@@ -426,6 +451,102 @@ public class DropwizardIntegrationTest {
         @Path("byte/uripath")
         public Response byteLocationHeaderWithUriBuilder() {
             return Response.temporaryRedirect(UriBuilder.fromPath("/{byte}").build(new Samples.Byte((byte) 1))).build();
+        }
+
+        @POST
+        @Path("short/reqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void shortReqBody(Samples.Short tt) {
+            spy.put(Samples.Short.class, tt);
+        }
+
+        @POST
+        @Path("short/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void shortNestedReqBody(DtoWithShortTT dto) {
+            spy.put(Samples.Short.class, dto.id);
+        }
+
+        @POST
+        @Path("short/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void shortMapReqBody(Map<String, Samples.Short> map) {
+            spy.put(Samples.Short.class, map.get("id"));
+        }
+
+        @POST
+        @Path("short/keyinmapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void shortKeyInMapReqBody(Map<Samples.Short, Object> map) {
+            spy.put(Samples.Short.class, map.keySet().iterator().next());
+        }
+
+        @GET
+        @Path("short/queryparam")
+        public void shortQueryParam(@QueryParam("test") Samples.Short tt) {
+            spy.put(Samples.Short.class, tt);
+        }
+
+        @GET
+        @Path("short/pathparam/{test}")
+        public void shortPathParam(@PathParam("test") Samples.Short tt) {
+            spy.put(Samples.Short.class, tt);
+        }
+
+        @POST
+        @Path("short/formparam")
+        public void shortFormParam(@FormParam("test") Samples.Short tt) {
+            spy.put(Samples.Short.class, tt);
+        }
+
+        @GET
+        @Path("short/reqheader")
+        public void shortReqHeader(@HeaderParam("test") Samples.Short tt) {
+            spy.put(Samples.Short.class, tt);
+        }
+
+        @GET
+        @Path("short/respbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Samples.Short shortRespBody() {
+            return new Samples.Short((short) 1);
+        }
+
+        @GET
+        @Path("short/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithShortTT shortNestedRespBody() {
+            return new DtoWithShortTT(new Samples.Short((short) 1), "qwe");
+        }
+
+        @GET
+        @Path("short/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> shortMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Short((short) 1));
+            return map;
+        }
+
+        @GET
+        @Path("short/keyinmaprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<Samples.Short, Object> shortKeyInMapRespBody() {
+            final Map<Samples.Short, Object> map = new HashMap<>();
+            map.put(new Samples.Short((short) 1), "qwe");
+            return map;
+        }
+
+        @GET
+        @Path("short/respheader")
+        public Response shortRespHeader() {
+            return Response.ok().header("test", new Samples.Short((short) 1)).build();
+        }
+
+        @GET
+        @Path("short/uripath")
+        public Response shortLocationHeaderWithUriBuilder() {
+            return Response.temporaryRedirect(UriBuilder.fromPath("/{short}").build(new Samples.Short((short) 1))).build();
         }
     }
 
@@ -926,7 +1047,175 @@ public class DropwizardIntegrationTest {
         final Response req = resource
                 .client()
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
-    .target("/byte/uripath")
+                .target("/byte/uripath")
+                .request()
+                .get();
+        final String path = req.getLocation().getPath();
+        Assert.assertEquals(expected, path);
+    }
+
+    @Test
+    public void canDeserializeShortTTAsRequestBody() {
+        final String value = "1";
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":\"blah\"}";
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":1,\"somedata\":2}";
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/mapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTWhenKeyOfMapRequestBody() {
+        final String value = "{\"1\":\"blah\"}";
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/keyinmapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTAsQueryParam() {
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/queryparam")
+                .queryParam("test", 1)
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTAsPathParam() {
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/pathparam/1")
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTAsFormParam() {
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/formparam")
+                .request()
+                .post(Entity.form(new Form("test", "1")));
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canDeserializeShortTTAsReqHeader() {
+        final Samples.Short expected = new Samples.Short((short) 1);
+        resource
+                .client()
+                .target("/short/reqheader")
+                .request()
+                .header("test", 1)
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Short.class));
+    }
+
+    @Test
+    public void canSerializeShortTTAsRespBody() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/short/respbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeShortTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":1,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/short/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeShortTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":1}";
+        final Response req = resource
+                .client()
+                .target("/short/maprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeShortTTWhenKeyOfMapRespBody() {
+        final String expected = "{\"1\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/short/keyinmaprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeShortTTAsRespHeader() {
+        final String expected = "1";
+        final Response req = resource
+                .client()
+                .target("/short/respheader")
+                .request()
+                .get();
+        final String header = req.getHeaderString("test");
+        Assert.assertEquals(expected, header);
+    }
+
+    @Test
+    @Ignore(value = "no way to provide UriBuilder with a transformation for the value, it just calls toString.")
+    public void canSerializeShortTTAsPartOfUri() {
+        final String expected = "/1";
+        final Response req = resource
+                .client()
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
+                .target("/short/uripath")
                 .request()
                 .get();
         final String path = req.getLocation().getPath();

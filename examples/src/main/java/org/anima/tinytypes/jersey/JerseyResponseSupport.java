@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ext.RuntimeDelegate;
 import org.anima.tinytypes.ByteTinyType;
 import org.anima.tinytypes.IntTinyType;
+import org.anima.tinytypes.ShortTinyType;
 import org.anima.tinytypes.StringTinyType;
 import org.glassfish.jersey.internal.AbstractRuntimeDelegate;
 import org.glassfish.jersey.server.internal.RuntimeDelegateImpl;
@@ -32,6 +33,10 @@ public class JerseyResponseSupport {
         }
         if (ByteTinyType.class.equals(kind)) {
             systemRegisteredHeaderProviders.add(new ByteTTHeaderDelegateProvider(tt));
+            return;
+        }
+        if (ShortTinyType.class.equals(kind)) {
+            systemRegisteredHeaderProviders.add(new ShortTTHeaderDelegateProvider(tt));
             return;
         }
         throw new IllegalArgumentException(String.format("Not a supported TinyType: %s", tt.getCanonicalName()));

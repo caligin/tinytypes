@@ -10,31 +10,31 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.deser.KeyDeserializers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import org.anima.tinytypes.ByteTinyType;
+import org.anima.tinytypes.ShortTinyType;
 
-public class ByteTinyTypesKeyDeserializers implements KeyDeserializers {
+public class ShortTinyTypesKeyDeserializers implements KeyDeserializers {
 
     @Override
     public KeyDeserializer findKeyDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) throws JsonMappingException {
         Class<?> candidateTT = type.getRawClass();
-        if (ByteTinyType.class.equals(candidateTT.getSuperclass())) {
-            return new ByteTinyTypeKeyDeserializer(candidateTT);
+        if (ShortTinyType.class.equals(candidateTT.getSuperclass())) {
+            return new ShortTinyTypeKeyDeserializer(candidateTT);
         }
         return null;
     }
 
-    public static class ByteTinyTypeKeyDeserializer extends KeyDeserializer {
+    public static class ShortTinyTypeKeyDeserializer extends KeyDeserializer {
 
         private final Class<?> rawType;
 
-        public ByteTinyTypeKeyDeserializer(Class<?> rawType) {
+        public ShortTinyTypeKeyDeserializer(Class<?> rawType) {
             this.rawType = rawType;
         }
 
         @Override
         public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             try {
-                return rawType.getConstructor(byte.class).newInstance(Byte.parseByte(key));
+                return rawType.getConstructor(short.class).newInstance(Short.parseShort(key));
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
