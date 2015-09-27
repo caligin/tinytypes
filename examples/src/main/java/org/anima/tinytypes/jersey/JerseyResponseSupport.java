@@ -3,6 +3,7 @@ package org.anima.tinytypes.jersey;
 import java.lang.reflect.Field;
 import java.util.Set;
 import javax.ws.rs.ext.RuntimeDelegate;
+import org.anima.tinytypes.BooleanTinyType;
 import org.anima.tinytypes.ByteTinyType;
 import org.anima.tinytypes.IntTinyType;
 import org.anima.tinytypes.LongTinyType;
@@ -42,6 +43,10 @@ public class JerseyResponseSupport {
         }
         if (LongTinyType.class.equals(kind)) {
             systemRegisteredHeaderProviders.add(new LongTTHeaderDelegateProvider(tt));
+            return;
+        }
+        if (BooleanTinyType.class.equals(kind)) {
+            systemRegisteredHeaderProviders.add(new BooleanTTHeaderDelegateProvider(tt));
             return;
         }
         throw new IllegalArgumentException(String.format("Not a supported TinyType: %s", tt.getCanonicalName()));

@@ -24,6 +24,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import org.anima.tinytypes.jersey.BooleanTTParamProvider;
 import org.anima.tinytypes.jersey.ByteTTParamProvider;
 import org.anima.tinytypes.jersey.LongTTParamProvider;
 import org.anima.tinytypes.jersey.ShortTTParamProvider;
@@ -47,12 +48,14 @@ public class DropwizardIntegrationTest {
             .addProvider(ByteTTParamProvider.class)
             .addProvider(ShortTTParamProvider.class)
             .addProvider(LongTTParamProvider.class)
+            .addProvider(BooleanTTParamProvider.class)
             .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
                                     Samples.Str.class,
                                     Samples.Integer.class,
                                     Samples.Byte.class,
                                     Samples.Short.class,
-                                    Samples.Long.class
+                                    Samples.Long.class,
+                                    Samples.Boolean.class
                             )))
             .build();
 
@@ -63,7 +66,8 @@ public class DropwizardIntegrationTest {
                 Samples.Integer.class,
                 Samples.Byte.class,
                 Samples.Short.class,
-                Samples.Long.class
+                Samples.Long.class,
+                Samples.Boolean.class
         );
     }
 
@@ -172,6 +176,27 @@ public class DropwizardIntegrationTest {
         }
 
         public Samples.Long getId() {
+            return id;
+        }
+
+        public String getSomedata() {
+            return somedata;
+        }
+
+    }
+
+    public static class DtoWithBooleanTT {
+
+        private final Samples.Boolean id;
+        private final String somedata;
+
+        @JsonCreator
+        public DtoWithBooleanTT(@JsonProperty("id") Samples.Boolean id, @JsonProperty("somedata") String somedata) {
+            this.id = id;
+            this.somedata = somedata;
+        }
+
+        public Samples.Boolean getId() {
             return id;
         }
 
@@ -668,6 +693,102 @@ public class DropwizardIntegrationTest {
         @Path("long/uripath")
         public Response longLocationHeaderWithUriBuilder() {
             return Response.temporaryRedirect(UriBuilder.fromPath("/{long}").build(new Samples.Long((long) 1))).build();
+        }
+
+        @POST
+        @Path("boolean/reqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void booleanReqBody(Samples.Boolean tt) {
+            spy.put(Samples.Boolean.class, tt);
+        }
+
+        @POST
+        @Path("boolean/nestedreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void booleanNestedReqBody(DtoWithBooleanTT dto) {
+            spy.put(Samples.Boolean.class, dto.id);
+        }
+
+        @POST
+        @Path("boolean/mapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void booleanMapReqBody(Map<String, Samples.Boolean> map) {
+            spy.put(Samples.Boolean.class, map.get("id"));
+        }
+
+        @POST
+        @Path("boolean/keyinmapreqbody")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public void booleanKeyInMapReqBody(Map<Samples.Boolean, Object> map) {
+            spy.put(Samples.Boolean.class, map.keySet().iterator().next());
+        }
+
+        @GET
+        @Path("boolean/queryparam")
+        public void booleanQueryParam(@QueryParam("test") Samples.Boolean tt) {
+            spy.put(Samples.Boolean.class, tt);
+        }
+
+        @GET
+        @Path("boolean/pathparam/{test}")
+        public void booleanPathParam(@PathParam("test") Samples.Boolean tt) {
+            spy.put(Samples.Boolean.class, tt);
+        }
+
+        @POST
+        @Path("boolean/formparam")
+        public void booleanFormParam(@FormParam("test") Samples.Boolean tt) {
+            spy.put(Samples.Boolean.class, tt);
+        }
+
+        @GET
+        @Path("boolean/reqheader")
+        public void booleanReqHeader(@HeaderParam("test") Samples.Boolean tt) {
+            spy.put(Samples.Boolean.class, tt);
+        }
+
+        @GET
+        @Path("boolean/respbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Samples.Boolean booleanRespBody() {
+            return new Samples.Boolean(true);
+        }
+
+        @GET
+        @Path("boolean/nestedrespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public DtoWithBooleanTT booleanNestedRespBody() {
+            return new DtoWithBooleanTT(new Samples.Boolean(true), "qwe");
+        }
+
+        @GET
+        @Path("boolean/maprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<String, Object> booleanMapRespBody() {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("id", new Samples.Boolean(true));
+            return map;
+        }
+
+        @GET
+        @Path("boolean/keyinmaprespbody")
+        @Produces(MediaType.APPLICATION_JSON)
+        public Map<Samples.Boolean, Object> booleanKeyInMapRespBody() {
+            final Map<Samples.Boolean, Object> map = new HashMap<>();
+            map.put(new Samples.Boolean(true), "qwe");
+            return map;
+        }
+
+        @GET
+        @Path("boolean/respheader")
+        public Response booleanRespHeader() {
+            return Response.ok().header("test", new Samples.Boolean(true)).build();
+        }
+
+        @GET
+        @Path("boolean/uripath")
+        public Response booleanLocationHeaderWithUriBuilder() {
+            return Response.temporaryRedirect(UriBuilder.fromPath("/{boolean}").build(new Samples.Boolean(true))).build();
         }
     }
 
@@ -1505,6 +1626,174 @@ public class DropwizardIntegrationTest {
                 .client()
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .target("/long/uripath")
+                .request()
+                .get();
+        final String path = req.getLocation().getPath();
+        Assert.assertEquals(expected, path);
+    }
+
+    @Test
+    public void canDeserializeBooleanTTAsRequestBody() {
+        final String value = "true";
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/reqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTWhenNestedInRequestBody() {
+        final String value = "{\"id\":true,\"somedata\":\"blah\"}";
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/nestedreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTWhenValueInMapRequestBody() {
+        final String value = "{\"id\":true,\"somedata\":false}";
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/mapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTWhenKeyOfMapRequestBody() {
+        final String value = "{\"true\":\"blah\"}";
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/keyinmapreqbody")
+                .request()
+                .post(Entity.entity(value, MediaType.APPLICATION_JSON));
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTAsQueryParam() {
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/queryparam")
+                .queryParam("test", true)
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTAsPathParam() {
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/pathparam/true")
+                .request()
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTAsFormParam() {
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/formparam")
+                .request()
+                .post(Entity.form(new Form("test", "true")));
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canDeserializeBooleanTTAsReqHeader() {
+        final Samples.Boolean expected = new Samples.Boolean(true);
+        resource
+                .client()
+                .target("/boolean/reqheader")
+                .request()
+                .header("test", true)
+                .get();
+        Assert.assertEquals(expected, spy.get(Samples.Boolean.class));
+    }
+
+    @Test
+    public void canSerializeBooleanTTAsRespBody() {
+        final String expected = "true";
+        final Response req = resource
+                .client()
+                .target("/boolean/respbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeBooleanTTWhenNestedInRespBody() {
+        final String expected = "{\"id\":true,\"somedata\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/boolean/nestedrespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeBooleanTTWhenValueInMapRespBody() {
+        final String expected = "{\"id\":true}";
+        final Response req = resource
+                .client()
+                .target("/boolean/maprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeBooleanTTWhenKeyOfMapRespBody() {
+        final String expected = "{\"true\":\"qwe\"}";
+        final Response req = resource
+                .client()
+                .target("/boolean/keyinmaprespbody")
+                .request()
+                .get();
+        final String rawBody = req.readEntity(String.class);
+        Assert.assertEquals(expected, rawBody);
+    }
+
+    @Test
+    public void canSerializeBooleanTTAsRespHeader() {
+        final String expected = "true";
+        final Response req = resource
+                .client()
+                .target("/boolean/respheader")
+                .request()
+                .get();
+        final String header = req.getHeaderString("test");
+        Assert.assertEquals(expected, header);
+    }
+
+    @Test
+    @Ignore(value = "no way to provide UriBuilder with a transformation for the value, it just calls toString.")
+    public void canSerializeBooleanTTAsPartOfUri() {
+        final String expected = "/true";
+        final Response req = resource
+                .client()
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
+                .target("/boolean/uripath")
                 .request()
                 .get();
         final String path = req.getLocation().getPath();
