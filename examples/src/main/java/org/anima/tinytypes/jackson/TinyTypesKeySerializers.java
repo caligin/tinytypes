@@ -9,25 +9,31 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import java.io.IOException;
-import org.anima.tinytypes.ShortTinyType;
-import org.anima.tinytypes.meta.ShortTinyTypes;
+import org.anima.tinytypes.meta.MetaTinyType;
+import org.anima.tinytypes.meta.MetaTinyTypes;
 
-public class ShortTinyTypesKeySerializers extends Serializers.Base {
+public class TinyTypesKeySerializers extends Serializers.Base {
 
     @Override
     public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
         Class<?> candidateTT = type.getRawClass();
-        if (ShortTinyTypes.includes(candidateTT)) {
-            return new ShortTinyTypeKeySerializer();
+        if (MetaTinyTypes.isTinyType(candidateTT)) {
+            return new TinyTypesKeySerializer<>(candidateTT);
         }
         return super.findSerializer(config, type, beanDesc);
     }
 
-    public static class ShortTinyTypeKeySerializer<T extends ShortTinyType> extends JsonSerializer<T> {
+    public static class TinyTypesKeySerializer<T> extends JsonSerializer<T> {
+
+        private final MetaTinyType<T> meta;
+
+        public TinyTypesKeySerializer(Class<T> tt) {
+            this.meta = MetaTinyTypes.metaFor(tt);
+        }
 
         @Override
         public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
-            gen.writeFieldName(Short.toString(value.value));
+            gen.writeFieldName(meta.stringify(value));
         }
 
     }
