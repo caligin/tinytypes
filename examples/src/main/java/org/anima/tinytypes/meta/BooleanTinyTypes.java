@@ -33,4 +33,9 @@ public class BooleanTinyTypes implements MetaTinyType<BooleanTinyType> {
         }
     }
 
+    @Override
+    public <U extends BooleanTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, Boolean.parseBoolean(value));
+    }
+
 }

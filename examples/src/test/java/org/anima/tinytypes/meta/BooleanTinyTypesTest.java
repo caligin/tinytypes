@@ -84,6 +84,17 @@ public class BooleanTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTParsingValue() {
+            final Samples.Boolean expected = new Samples.Boolean((boolean) true);
+            final Samples.Boolean got = new BooleanTinyTypes().fromString(Samples.Boolean.class, "true");
+            Assert.assertEquals(expected, got);
+        }
+
+    }
+
     public static class Stringify {
 
         @Test

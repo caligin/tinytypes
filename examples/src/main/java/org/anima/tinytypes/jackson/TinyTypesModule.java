@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.Module;
 
 public final class TinyTypesModule extends Module {
 
-    public TinyTypesModule(Class<?>... ttToRegister) {
-    }
-
     @Override
     public String getModuleName() {
         return "TinyTypes";
@@ -23,12 +20,7 @@ public final class TinyTypesModule extends Module {
         context.addKeySerializers(new TinyTypesKeySerializers());
         context.addSerializers(new TinyTypesSerializers());
         context.addDeserializers(new TinyTypesDeserializers());
-        context.addKeyDeserializers(new StringTinyTypesKeyDeserializers());
-        context.addKeyDeserializers(new IntTinyTypesKeyDeserializers());
-        context.addKeyDeserializers(new ByteTinyTypesKeyDeserializers());
-        context.addKeyDeserializers(new ShortTinyTypesKeyDeserializers());
-        context.addKeyDeserializers(new LongTinyTypesKeyDeserializers());
-        context.addKeyDeserializers(new BooleanTinyTypesKeyDeserializers());
+        context.addKeyDeserializers(new TinyTypesKeyDeserializers());
     }
 
 }

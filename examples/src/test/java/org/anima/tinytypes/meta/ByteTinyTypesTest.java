@@ -83,6 +83,22 @@ public class ByteTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTParsingValue() {
+            final Samples.Byte expected = new Samples.Byte((byte) 1);
+            final Samples.Byte got = new ByteTinyTypes().fromString(Samples.Byte.class, "1");
+            Assert.assertEquals(expected, got);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNonByteParseableValue() {
+            new ByteTinyTypes().newInstance(Samples.Byte.class, "a");
+        }
+
+    }
+
     public static class Stringify {
 
         @Test

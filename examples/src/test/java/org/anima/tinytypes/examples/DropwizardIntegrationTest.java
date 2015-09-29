@@ -50,14 +50,7 @@ public class DropwizardIntegrationTest {
             .addProvider(ShortTTParamProvider.class)
             .addProvider(LongTTParamProvider.class)
             .addProvider(BooleanTTParamProvider.class)
-            .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule(
-                                    Samples.Str.class,
-                                    Samples.Integer.class,
-                                    Samples.Byte.class,
-                                    Samples.Short.class,
-                                    Samples.Long.class,
-                                    Samples.Boolean.class
-                            )))
+            .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule()))
             .build();
 
     @Before

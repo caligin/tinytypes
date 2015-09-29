@@ -86,6 +86,22 @@ public class ShortTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTParsingValue() {
+            final Samples.Short expected = new Samples.Short((short) 1);
+            final Samples.Short got = new ShortTinyTypes().fromString(Samples.Short.class, "1");
+            Assert.assertEquals(expected, got);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNonShortParseableValue() {
+            new ShortTinyTypes().newInstance(Samples.Short.class, "a");
+        }
+
+    }
+
     public static class Stringify {
 
         @Test

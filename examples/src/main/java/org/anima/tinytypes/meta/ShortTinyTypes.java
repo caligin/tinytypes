@@ -33,4 +33,9 @@ public class ShortTinyTypes implements MetaTinyType<ShortTinyType> {
         }
     }
 
+    @Override
+    public <U extends ShortTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, Short.parseShort(value));
+    }
+
 }

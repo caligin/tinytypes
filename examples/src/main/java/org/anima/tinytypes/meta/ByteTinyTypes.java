@@ -33,4 +33,9 @@ public class ByteTinyTypes implements MetaTinyType<ByteTinyType> {
         }
     }
 
+    @Override
+    public <U extends ByteTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, Byte.parseByte(value));
+    }
+
 }

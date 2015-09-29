@@ -33,4 +33,9 @@ public class IntTinyTypes implements MetaTinyType<IntTinyType> {
         }
     }
 
+    @Override
+    public <U extends IntTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, Integer.parseInt(value));
+    }
+
 }

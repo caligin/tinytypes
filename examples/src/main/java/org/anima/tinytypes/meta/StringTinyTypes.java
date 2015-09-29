@@ -33,4 +33,9 @@ public class StringTinyTypes implements MetaTinyType<StringTinyType> {
         }
     }
 
+    @Override
+    public <U extends StringTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, value);
+    }
+
 }

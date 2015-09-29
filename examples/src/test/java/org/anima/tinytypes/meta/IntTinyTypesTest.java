@@ -83,6 +83,22 @@ public class IntTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTParsingValue() {
+            final Samples.Integer expected = new Samples.Integer((int) 1);
+            final Samples.Integer got = new IntTinyTypes().fromString(Samples.Integer.class, "1");
+            Assert.assertEquals(expected, got);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNonIntParseableValue() {
+            new IntTinyTypes().newInstance(Samples.Integer.class, "a");
+        }
+
+    }
+
     public static class Stringify {
 
         @Test

@@ -83,6 +83,17 @@ public class StringTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTWrappingValue() {
+            final Samples.Str expected = new Samples.Str("1");
+            final Samples.Str got = new StringTinyTypes().fromString(Samples.Str.class, "1");
+            Assert.assertEquals(expected, got);
+        }
+
+    }
+
     public static class Stringify {
 
         @Test

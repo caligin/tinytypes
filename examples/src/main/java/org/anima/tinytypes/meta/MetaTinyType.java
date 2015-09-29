@@ -7,4 +7,6 @@ public interface MetaTinyType<T> {
     String stringify(T value);
 
     <U extends T> U newInstance(Class<U> type, Object value);
+
+    <U extends T> U fromString(Class<U> type, String value);
 }

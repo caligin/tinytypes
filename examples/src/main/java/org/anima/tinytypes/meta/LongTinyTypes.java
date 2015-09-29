@@ -33,4 +33,9 @@ public class LongTinyTypes implements MetaTinyType<LongTinyType> {
         }
     }
 
+    @Override
+    public <U extends LongTinyType> U fromString(Class<U> type, String value) {
+        return newInstance(type, Long.parseLong(value));
+    }
+
 }

@@ -83,6 +83,22 @@ public class LongTinyTypesTest {
 
     }
 
+    public static class FromString {
+
+        @Test
+        public void yieldsNewInstanceOfSpecifiedTTParsingValue() {
+            final Samples.Long expected = new Samples.Long((long) 1);
+            final Samples.Long got = new LongTinyTypes().fromString(Samples.Long.class, "1");
+            Assert.assertEquals(expected, got);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNonLongParseableValue() {
+            new LongTinyTypes().newInstance(Samples.Long.class, "a");
+        }
+
+    }
+
     public static class Stringify {
 
         @Test
