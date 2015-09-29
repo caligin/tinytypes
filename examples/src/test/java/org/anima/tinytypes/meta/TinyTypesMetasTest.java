@@ -6,7 +6,7 @@ import org.anima.tinytypes.IntTinyType;
 import org.anima.tinytypes.LongTinyType;
 import org.anima.tinytypes.ShortTinyType;
 import org.anima.tinytypes.StringTinyType;
-import org.anima.tinytypes.examples.Samples;
+import org.anima.tinytypes.Samples;
 import org.junit.Test;
 import org.junit.Assert;
 

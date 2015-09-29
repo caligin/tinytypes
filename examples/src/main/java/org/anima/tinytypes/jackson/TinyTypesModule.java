@@ -22,15 +22,12 @@ public final class TinyTypesModule extends Module {
     public void setupModule(SetupContext context) {
         context.addKeySerializers(new TinyTypesKeySerializers());
         context.addSerializers(new TinyTypesSerializers());
+        context.addDeserializers(new TinyTypesDeserializers());
         context.addKeyDeserializers(new StringTinyTypesKeyDeserializers());
         context.addKeyDeserializers(new IntTinyTypesKeyDeserializers());
-        context.addDeserializers(new ByteTinyTypesDeserializers());
         context.addKeyDeserializers(new ByteTinyTypesKeyDeserializers());
-        context.addDeserializers(new ShortTinyTypesDeserializers());
         context.addKeyDeserializers(new ShortTinyTypesKeyDeserializers());
-        context.addDeserializers(new LongTinyTypesDeserializers());
         context.addKeyDeserializers(new LongTinyTypesKeyDeserializers());
-        context.addDeserializers(new BooleanTinyTypesDeserializers());
         context.addKeyDeserializers(new BooleanTinyTypesKeyDeserializers());
     }
 

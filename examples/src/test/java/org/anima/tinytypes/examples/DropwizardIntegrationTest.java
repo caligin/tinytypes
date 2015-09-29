@@ -1,5 +1,6 @@
 package org.anima.tinytypes.examples;
 
+import org.anima.tinytypes.Samples;
 import org.anima.tinytypes.jackson.TinyTypesModule;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
