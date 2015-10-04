@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.jackson.Jackson;
 import org.anima.tinytypes.jersey.JerseyResponseSupport;
-import org.anima.tinytypes.jersey.StringTTParamProvider;
-import org.anima.tinytypes.jersey.IntTTParamProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +23,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import org.anima.tinytypes.jersey.BooleanTTParamProvider;
-import org.anima.tinytypes.jersey.ByteTTParamProvider;
-import org.anima.tinytypes.jersey.LongTTParamProvider;
-import org.anima.tinytypes.jersey.ShortTTParamProvider;
+import org.anima.tinytypes.jersey.TinyTypesParamProvider;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,12 +39,7 @@ public class DropwizardIntegrationTest {
     @ClassRule
     public static final ResourceTestRule resource = ResourceTestRule.builder()
             .addResource(new TinyTypesResource(spy))
-            .addProvider(StringTTParamProvider.class)
-            .addProvider(IntTTParamProvider.class)
-            .addProvider(ByteTTParamProvider.class)
-            .addProvider(ShortTTParamProvider.class)
-            .addProvider(LongTTParamProvider.class)
-            .addProvider(BooleanTTParamProvider.class)
+            .addProvider(TinyTypesParamProvider.class)
             .setMapper(Jackson.newObjectMapper().registerModule(new TinyTypesModule()))
             .build();
 
