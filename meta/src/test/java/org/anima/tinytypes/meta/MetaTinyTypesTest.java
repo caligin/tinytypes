@@ -29,6 +29,7 @@ public class MetaTinyTypesTest {
         public void classesThatExtendATTKindAreTTs(@FromDataPoints("tts") Class<?> tinyType) {
             Assert.assertTrue(MetaTinyTypes.isTinyType(tinyType));
         }
+
         @DataPoints("extend-tts")
         public static final Class<?>[] sampelsExtendingATinyType = new Class<?>[]{
             Samples.StrIndirectAncestor.class,
@@ -46,6 +47,11 @@ public class MetaTinyTypesTest {
         @Test
         public void classUnrelatedToTTsIsNotTT() {
             Assert.assertFalse(MetaTinyTypes.isTinyType(Object.class));
+        }
+
+        @Test
+        public void nullIsNotATT() {
+            Assert.assertFalse(MetaTinyTypes.isTinyType(null));
         }
     }
 
@@ -72,6 +78,11 @@ public class MetaTinyTypesTest {
         @Test(expected = IllegalArgumentException.class)
         public void throwsWhenNotATT() {
             MetaTinyTypes.metaFor(Object.class);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsOnNull() {
+            MetaTinyTypes.metaFor(null);
         }
     }
 

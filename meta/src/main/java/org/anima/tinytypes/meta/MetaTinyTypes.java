@@ -17,7 +17,7 @@ public abstract class MetaTinyTypes {
                 return meta;
             }
         }
-        throw new IllegalArgumentException(String.format("not a tinytype: %s", candidate.getCanonicalName()));
+        throw new IllegalArgumentException(String.format("not a tinytype: %s", candidate == null ? "null" : candidate.getCanonicalName()));
     }
 
     public static boolean isTinyType(Class<?> candidate) {

@@ -19,14 +19,20 @@ public class BooleanTinyTypesTest {
         }
 
         @Test
-        public void yieldsTrueWhenCandidateSuperclassIsNotBooleanTT() {
+        public void yieldsFalseWhenCandidateSuperclassIsNotBooleanTT() {
             final boolean got = new BooleanTinyTypes().isMetaOf(Samples.class);
             Assert.assertFalse(got);
         }
 
         @Test
-        public void yieldsTrueWhenAncestorOfCandidateIsBooleanTTButNotDirectSuperclass() {
+        public void yieldsFalseWhenAncestorOfCandidateIsBooleanTTButNotDirectSuperclass() {
             final boolean got = new BooleanTinyTypes().isMetaOf(BooleanIndirectAncestor.class);
+            Assert.assertFalse(got);
+        }
+
+        @Test
+        public void yieldsFalseForNull() {
+            final boolean got = new BooleanTinyTypes().isMetaOf(null);
             Assert.assertFalse(got);
         }
 
@@ -41,14 +47,20 @@ public class BooleanTinyTypesTest {
         }
 
         @Test
-        public void yieldsTrueWhenCandidateSuperclassIsNotBooleanTT() {
+        public void yieldsFalseWhenCandidateSuperclassIsNotBooleanTT() {
             final boolean got = BooleanTinyTypes.includes(Samples.class);
             Assert.assertFalse(got);
         }
 
         @Test
-        public void yieldsTrueWhenAncestorOfCandidateIsBooleanTTButNotDirectSuperclass() {
+        public void yieldsFalseWhenAncestorOfCandidateIsBooleanTTButNotDirectSuperclass() {
             final boolean got = BooleanTinyTypes.includes(BooleanIndirectAncestor.class);
+            Assert.assertFalse(got);
+        }
+
+        @Test
+        public void yieldsFalseWhenNull() {
+            final boolean got = BooleanTinyTypes.includes(null);
             Assert.assertFalse(got);
         }
     }
@@ -82,6 +94,16 @@ public class BooleanTinyTypesTest {
             new BooleanTinyTypes().newInstance(Samples.NoOneArgCtorBoolean.class, true);
         }
 
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullValue() {
+            new BooleanTinyTypes().newInstance(null, true);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullClass() {
+            new BooleanTinyTypes().newInstance(null, false);
+        }
+
     }
 
     public static class FromString {
@@ -93,6 +115,16 @@ public class BooleanTinyTypesTest {
             Assert.assertEquals(expected, got);
         }
 
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullValue() {
+            new BooleanTinyTypes().fromString(Samples.Boolean.class, null);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullClass() {
+            new BooleanTinyTypes().fromString(null, "false");
+        }
+
     }
 
     public static class Stringify {
@@ -102,6 +134,11 @@ public class BooleanTinyTypesTest {
             final String expected = "true";
             final String got = new BooleanTinyTypes().stringify(new Samples.Boolean(true));
             Assert.assertEquals(expected, got);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNull() {
+            new BooleanTinyTypes().stringify(null);
         }
     }
 

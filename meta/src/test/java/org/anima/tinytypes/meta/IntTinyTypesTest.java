@@ -18,17 +18,22 @@ public class IntTinyTypesTest {
         }
 
         @Test
-        public void yieldsTrueWhenCandidateSuperclassIsNotIntTT() {
+        public void yieldsFalseWhenCandidateSuperclassIsNotIntTT() {
             final boolean got = new IntTinyTypes().isMetaOf(Samples.class);
             Assert.assertFalse(got);
         }
 
         @Test
-        public void yieldsTrueWhenAncestorOfCandidateIsIntTTButNotDirectSuperclass() {
+        public void yieldsFalseWhenAncestorOfCandidateIsIntTTButNotDirectSuperclass() {
             final boolean got = new IntTinyTypes().isMetaOf(Samples.IntIndirectAncestor.class);
             Assert.assertFalse(got);
         }
 
+        @Test
+        public void yieldsFalseForNull() {
+            final boolean got = new IntTinyTypes().isMetaOf(null);
+            Assert.assertFalse(got);
+        }
     }
 
     public static class Includes {
@@ -40,16 +45,23 @@ public class IntTinyTypesTest {
         }
 
         @Test
-        public void yieldsTrueWhenCandidateSuperclassIsNotIntTT() {
+        public void yieldsFalseWhenCandidateSuperclassIsNotIntTT() {
             final boolean got = IntTinyTypes.includes(Samples.class);
             Assert.assertFalse(got);
         }
 
         @Test
-        public void yieldsTrueWhenAncestorOfCandidateIsIntTTButNotDirectSuperclass() {
+        public void yieldsFalseWhenAncestorOfCandidateIsIntTTButNotDirectSuperclass() {
             final boolean got = IntTinyTypes.includes(Samples.IntIndirectAncestor.class);
             Assert.assertFalse(got);
         }
+
+        @Test
+        public void yieldsFalseWhenNull() {
+            final boolean got = IntTinyTypes.includes(null);
+            Assert.assertFalse(got);
+        }
+
     }
 
     public static class NewInstance {
@@ -81,6 +93,11 @@ public class IntTinyTypesTest {
             new IntTinyTypes().newInstance(Samples.NoOneArgCtorInteger.class, 1);
         }
 
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNull() {
+            new IntTinyTypes().newInstance(null, 1);
+        }
+
     }
 
     public static class FromString {
@@ -94,7 +111,17 @@ public class IntTinyTypesTest {
 
         @Test(expected = IllegalArgumentException.class)
         public void throwsForNonIntParseableValue() {
-            new IntTinyTypes().newInstance(Samples.Integer.class, "a");
+            new IntTinyTypes().fromString(Samples.Integer.class, "a");
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullValue() {
+            new IntTinyTypes().fromString(Samples.Integer.class, null);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNullClass() {
+            new IntTinyTypes().fromString(null, "1");
         }
 
     }
@@ -107,6 +134,12 @@ public class IntTinyTypesTest {
             final String got = new IntTinyTypes().stringify(new Samples.Integer(1));
             Assert.assertEquals(expected, got);
         }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void throwsForNull() {
+            new IntTinyTypes().stringify(null);
+        }
+
     }
 
 }

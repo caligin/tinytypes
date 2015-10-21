@@ -6,23 +6,32 @@ import org.anima.tinytypes.IntTinyType;
 public class IntTinyTypes implements MetaTinyType<IntTinyType> {
 
     public static boolean includes(Class<?> candidate) {
+        if (candidate == null) {
+            return false;
+        }
         return IntTinyType.class.equals(candidate.getSuperclass());
     }
 
     @Override
     public boolean isMetaOf(Class<?> candidate) {
+        if (candidate == null) {
+            return false;
+        }
         return IntTinyType.class.equals(candidate.getSuperclass());
     }
 
     @Override
     public String stringify(IntTinyType value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value must be not null");
+        }
         return Integer.toString(value.value);
     }
 
     @Override
     public <U extends IntTinyType> U newInstance(Class<U> type, Object value) {
-        if (!includes(type)) {
-            throw new IllegalArgumentException(String.format("Not a %s: %s", IntTinyType.class.getSimpleName(), type.getCanonicalName()));
+        if (type == null || !includes(type)) {
+            throw new IllegalArgumentException(String.format("Not a %s: %s", IntTinyType.class.getSimpleName(), type == null ? "null" : type.getCanonicalName()));
         }
         try {
             return type.getConstructor(int.class).newInstance(value);

@@ -6,23 +6,35 @@ import org.anima.tinytypes.StringTinyType;
 public class StringTinyTypes implements MetaTinyType<StringTinyType> {
 
     public static boolean includes(Class<?> candidate) {
+        if (candidate == null) {
+            return false;
+        }
         return StringTinyType.class.equals(candidate.getSuperclass());
     }
 
     @Override
     public boolean isMetaOf(Class<?> candidate) {
+        if (candidate == null) {
+            return false;
+        }
         return StringTinyType.class.equals(candidate.getSuperclass());
     }
 
     @Override
     public String stringify(StringTinyType value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value must be not null");
+        }
         return value.value;
     }
 
     @Override
     public <U extends StringTinyType> U newInstance(Class<U> type, Object value) {
-        if (!includes(type)) {
-            throw new IllegalArgumentException(String.format("Not a %s: %s", StringTinyType.class.getSimpleName(), type.getCanonicalName()));
+        if (value == null) {
+            throw new IllegalArgumentException("value must be not null");
+        }
+        if (type == null || !includes(type)) {
+            throw new IllegalArgumentException(String.format("Not a %s: %s", StringTinyType.class.getSimpleName(), type == null ? "null" : type.getCanonicalName()));
         }
         try {
             return type.getConstructor(String.class).newInstance(value);
