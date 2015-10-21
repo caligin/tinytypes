@@ -4,10 +4,5 @@ jdk:
   - oraclejdk7
   - openjdk7
 script:
-  - mvn -f tinytypes/pom.xml clean install
-  - mvn -f testing/pom.xml clean install
-  - mvn -f meta/pom.xml clean install
-  - mvn -f jackson/pom.xml clean install
-  - mvn -f jersey/pom.xml clean install
-  - mvn -f examples/pom.xml clean install
+  - mvn clean install
 sudo: false
