@@ -34,8 +34,8 @@ public class TinyTypesDeserializers extends Deserializers.Base {
         private final Class<T> type;
 
         public TinyTypesDeserializer(Class<T> type) {
-            if (!MetaTinyTypes.isTinyType(type)) {
-                throw new IllegalArgumentException(String.format("not a tinytype: %s", type.getCanonicalName()));
+            if (type == null || !MetaTinyTypes.isTinyType(type)) {
+                throw new IllegalArgumentException(String.format("not a tinytype: %s", type == null ? "null" : type.getCanonicalName()));
             }
             this.type = type;
         }

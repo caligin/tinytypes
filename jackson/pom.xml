@@ -23,6 +23,12 @@
             <version>2.5.1</version>
         </dependency>
         <dependency>
+            <groupId>org.anima</groupId>
+            <artifactId>tinytypes-testing</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
