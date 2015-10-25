@@ -38,10 +38,11 @@ public class TinyTypesSerializers extends Serializers.Base {
 
         private final Class<T> type;
 
-        private TinyTypesSerializer(Class<T> type) {
-            if (!MetaTinyTypes.isTinyType(type)) {
-                throw new IllegalArgumentException(String.format("not a tinytype: %s", type.getCanonicalName()));
+        public TinyTypesSerializer(Class<T> type) {
+            if (type == null || !MetaTinyTypes.isTinyType(type)) {
+                throw new IllegalArgumentException(String.format("not a tinytype: %s", type == null ? "null" : type.getCanonicalName()));
             }
+
             this.type = type;
         }
 

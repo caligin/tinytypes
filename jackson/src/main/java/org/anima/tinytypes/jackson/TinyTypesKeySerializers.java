@@ -28,6 +28,9 @@ public class TinyTypesKeySerializers extends Serializers.Base {
         private final MetaTinyType<T> meta;
 
         public TinyTypesKeySerializer(Class<T> tt) {
+            if (tt == null) {
+                throw new IllegalArgumentException(String.format("not a tinytype: %s", tt == null ? "null" : tt.getCanonicalName()));
+            }
             this.meta = MetaTinyTypes.metaFor(tt);
         }
 

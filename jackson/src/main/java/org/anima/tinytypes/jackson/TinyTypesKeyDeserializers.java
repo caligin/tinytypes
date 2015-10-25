@@ -28,6 +28,9 @@ public class TinyTypesKeyDeserializers implements KeyDeserializers {
         private final Class<?> type;
 
         public TinyTypesKeyDeserializer(Class<?> type) {
+            if (type == null || !MetaTinyTypes.isTinyType(type)) {
+                throw new IllegalArgumentException(String.format("not a tinytype: %s", type == null ? "null" : type.getCanonicalName()));
+            }
             this.type = type;
         }
 
