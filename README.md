@@ -33,7 +33,7 @@ Add jackson dep (Maven):
 <dependency>
     <groupId>org.anima</groupId>
     <artifactId>tinytypes-jackson</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -59,7 +59,7 @@ Add jersey dep (Maven):
 <dependency>
     <groupId>org.anima</groupId>
     <artifactId>tinytypes-jersey</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
