@@ -8,9 +8,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.anima.tinytypes.Samples;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -83,10 +80,8 @@ public class TinyTypesSerializersTest {
 
     }
 
-            @RunWith(Theories.class)
+    @RunWith(Theories.class)
     public static class Serialize {
-
-        
 
         @DataPoints
         public static final Pair<Object, String>[] ttAndExpectedSerialization = new Pair[]{
@@ -105,113 +100,6 @@ public class TinyTypesSerializersTest {
             final Object got = om.writeValueAsString(serializedAndExpectedDeserialization.fst);
             Assert.assertEquals(expected, got);
         }
-
-        
-//        @Test
-//        public void objectMapperWithTTSerializerInstalledYieldsExpectedSerializationsForStringTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedStrMap toSerialzie = new ReifiedStrMap((Map) Collections.singletonMap(new Samples.Str("a"), null));
-//            final String expected = asJsonMap("\"a\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        @Test
-//        public void objectMapperWithTTSerializerInstalledYieldsExpectedSerializationsForBooleanTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedBooleanMap toSerialzie = new ReifiedBooleanMap((Map) Collections.singletonMap(new Samples.Boolean(true), null));
-//            final String expected = asJsonMap("\"true\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        @Test
-//        public void objectMapperWithTTSerializerInstalledYieldsExpectedSerializationsForByteTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedByteMap toSerialzie = new ReifiedByteMap((Map) Collections.singletonMap(new Samples.Byte((byte) 1), null));
-//            final String expected = asJsonMap("\"1\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        @Test
-//        public void objectMapperWithShortTTSerializerInstalledYieldsExpectedSerializationsForShortTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedShortMap toSerialzie = new ReifiedShortMap((Map) Collections.singletonMap(new Samples.Short((short) 1), null));
-//            final String expected = asJsonMap("\"1\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        @Test
-//        public void objectMapperWithTTSerializerInstalledYieldsExpectedSerializationsForIntTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedIntMap toSerialzie = new ReifiedIntMap((Map) Collections.singletonMap(new Samples.Integer(1), null));
-//            final String expected = asJsonMap("\"1\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        @Test
-//        public void objectMapperWithTTSerializerInstalledYieldsExpectedSerializationsForLongTT() throws IOException {
-//            final ObjectMapper om = new ObjectMapper();
-//            om.registerModule(new SerializersOnlyModule());
-//            final ReifiedLongMap toSerialzie = new ReifiedLongMap((Map) Collections.singletonMap(new Samples.Long(1), null));
-//            final String expected = asJsonMap("\"1\"");
-//            final String got = om.writeValueAsString(toSerialzie);
-//            Assert.assertEquals(expected, got);
-//        }
-//
-//        public static class ReifiedStrMap extends HashMap<Samples.Str, Void> {
-//
-//            public ReifiedStrMap(Map<? extends Samples.Str, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        public static class ReifiedBooleanMap extends HashMap<Samples.Boolean, Void> {
-//
-//            public ReifiedBooleanMap(Map<? extends Samples.Boolean, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        public static class ReifiedByteMap extends HashMap<Samples.Byte, Void> {
-//
-//            public ReifiedByteMap(Map<? extends Samples.Byte, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        public static class ReifiedShortMap extends HashMap<Samples.Short, Void> {
-//
-//            public ReifiedShortMap(Map<? extends Samples.Short, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        public static class ReifiedIntMap extends HashMap<Samples.Integer, Void> {
-//
-//            public ReifiedIntMap(Map<? extends Samples.Integer, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        public static class ReifiedLongMap extends HashMap<Samples.Long, Void> {
-//
-//            public ReifiedLongMap(Map<? extends Samples.Long, ? extends Void> m) {
-//                super(m);
-//            }
-//        }
-//
-//        private String asJsonMap(String key) {
-//            return String.format("{%s:null}", key);
-//        }
 
         public static class SerializersOnlyModule extends Module {
 
