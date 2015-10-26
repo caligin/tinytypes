@@ -31,7 +31,7 @@ Add jitpack repository (Maven):
 Add jackson dep (Maven):
 ```
 <dependency>
-    <groupId>org.anima</groupId>
+    <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>tinytypes-jackson</artifactId>
     <version>1.0.1</version>
 </dependency>
@@ -57,7 +57,7 @@ Add jitpack repository (Maven):
 Add jersey dep (Maven):
 ```
 <dependency>
-    <groupId>org.anima</groupId>
+    <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>tinytypes-jersey</artifactId>
     <version>1.0.1</version>
 </dependency>
