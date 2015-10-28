@@ -57,6 +57,26 @@
 </ul>
 
 <h2>
+<a id="defining-a-tinytype" class="anchor" href="#defining-a-tinytype" aria-hidden="true"><span class="octicon octicon-link"></span></a>Defining a TinyType</h2>
+
+<ul>
+<li>Extend one of the base TinyTypes classes</li>
+<li>It must not be <code>abstract</code>
+</li>
+<li>Provide a constructor matching the one in the base class</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code>public class SomeKindOfId extends StringTinyType {
+    public SomeKindOfId(String value) {
+        super(value);
+        // ... additional validation or restrictions here
+    }
+}
+</code></pre>
+
+<h2>
 <a id="use-with-jackson" class="anchor" href="#use-with-jackson" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use with Jackson</h2>
 
 <p>Add jitpack repository (Maven):</p>
@@ -82,6 +102,11 @@
 </code></pre>
 
 <p>Profit!</p>
+
+<pre><code>objectMapper.writeValueAsString(new SomeKindOfId("ag7weq")); // "ag7weq"
+
+objectMapper.readValue("ag7weq", SomeKindOfId.class); // SomeKindOfId#ag7weq
+</code></pre>
 
 <h2>
 <a id="use-with-jersey" class="anchor" href="#use-with-jersey" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use with Jersey</h2>
@@ -123,6 +148,8 @@
 </code></pre>
 
 <p>Profit!</p>
+
+<p>(See tinytypes-examples test cases for more on how to use them with Jersey)</p>
 
 <h2>
 <a id="planned-for-the-future" class="anchor" href="#planned-for-the-future" aria-hidden="true"><span class="octicon octicon-link"></span></a>Planned for the future</h2>
