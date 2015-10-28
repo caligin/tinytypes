@@ -5,6 +5,32 @@
     <artifactId>tinytypes-jackson</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Typed wrappers on native types - Jackson module.</description>
+    <url>https://caligin.github.io/tinytypes/</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://raw.githubusercontent.com/caligin/tinytypes/master/LICENSE</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>caligin</id>
+            <name>Fulvio Meden</name>
+            <email>caligin35+tt@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:caligin/tinytypes.git</connection>
+        <developerConnection>scm:git:git@github.com:caligin/tinytypes.git</developerConnection>
+        <url>https://github.com/caligin/tinytypes</url>
+    </scm>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>

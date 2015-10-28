@@ -6,7 +6,31 @@
     <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>TinyTypes one-command-build POM</name>
     <description>This is not a parent not a reference pom. It's just a convenience to build everything on one go with correct dependency order resolution.</description>
+    <url>https://caligin.github.io/tinytypes/</url>
+    
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://raw.githubusercontent.com/caligin/tinytypes/master/LICENSE</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>caligin</id>
+            <name>Fulvio Meden</name>
+            <email>caligin35+tt@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:caligin/tinytypes.git</connection>
+        <developerConnection>scm:git:git@github.com:caligin/tinytypes.git</developerConnection>
+        <url>https://github.com/caligin/tinytypes</url>
+    </scm>
+    
     <modules>
         <module>tinytypes</module>
         <module>testing</module>
