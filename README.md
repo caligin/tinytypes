@@ -18,6 +18,22 @@ Supported libraries/frameworks:
 this implies:
 - Dropwizard (resources only, only JSON mediaType)
 
+## Defining a TinyType
+
+- Extend one of the base TinyTypes classes
+- It must not be `abstract`
+- Provide a constructor matching the one in the base class
+
+Example:
+```
+public class SomeKindOfId extends StringTinyType {
+    public SomeKindOfId(String value) {
+        super(value);
+        // ... additional validation or restrictions here
+    }
+}
+```
+
 ## Use with Jackson
 
 Add jitpack repository (Maven):
@@ -43,6 +59,11 @@ new ObjectMapper().registerModule(new TinyTypesModule())
 ```
 
 Profit!
+```
+objectMapper.writeValueAsString(new SomeKindOfId("ag7weq")); // "ag7weq"
+
+objectMapper.readValue("ag7weq", SomeKindOfId.class); // SomeKindOfId#ag7weq
+```
 
 ## Use with Jersey
 
@@ -83,6 +104,8 @@ JerseyResponseSupport.registerTinyTypes(
 ```
 
 Profit!
+
+(See tinytypes-examples test cases for more on how to use them with Jersey)
 
 ## Planned for the future
 
