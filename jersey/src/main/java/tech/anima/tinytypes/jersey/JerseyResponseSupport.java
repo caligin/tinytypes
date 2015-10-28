@@ -7,8 +7,18 @@ import org.glassfish.jersey.internal.AbstractRuntimeDelegate;
 import org.glassfish.jersey.server.internal.RuntimeDelegateImpl;
 import org.glassfish.jersey.spi.HeaderDelegateProvider;
 
+/**
+ * Class to register TinyTypes support on Jersey response headers.
+ */
 public class JerseyResponseSupport {
 
+    /**
+     * Registers Jersey HeaderDelegateProviders for the specified TinyTypes.
+     *
+     * @param head a TinyType
+     * @param tail other TinyTypes
+     * @throws IllegalArgumentException when a non-TinyType is given
+     */
     public static void registerTinyTypes(Class<?> head, Class<?>... tail) {
         final Set<HeaderDelegateProvider> systemRegisteredHeaderProviders = stealAcquireRefToHeaderDelegateProviders();
         register(head, systemRegisteredHeaderProviders);

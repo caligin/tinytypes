@@ -1,5 +1,8 @@
 package tech.anima.tinytypes;
 
+/**
+ * Sample TinyTypes (and not) for use in test cases.
+ */
 public class Samples {
 
     public static class Str extends StringTinyType {
