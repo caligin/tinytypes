@@ -20,6 +20,23 @@ this implies:
 
 ## Defining a TinyType
 
+Add jitpack repository (Maven):
+```
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+
+Add tinytypes dep (Maven):
+```
+<dependency>
+    <groupId>com.github.caligin.tinytypes</groupId>
+    <artifactId>tinytypes</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+</dependency>
+```
+
 - Extend one of the base TinyTypes classes
 - It must not be `abstract`
 - Provide a constructor matching the one in the base class
@@ -48,8 +65,8 @@ Add jackson dep (Maven):
 ```
 <dependency>
     <groupId>com.github.caligin.tinytypes</groupId>
-    <artifactId>tinytypes-jackson</artifactId>
-    <version>1.0.1</version>
+    <artifactId>jackson-datatype-tinytypes</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -80,7 +97,7 @@ Add jersey dep (Maven):
 <dependency>
     <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>tinytypes-jersey</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0-SNAPSHOT</version>
 </dependency>
 ```
 

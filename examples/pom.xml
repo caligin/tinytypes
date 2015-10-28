@@ -41,7 +41,7 @@
     <dependencies>
         <dependency>
             <groupId>tech.anima</groupId>
-            <artifactId>tinytypes-jackson</artifactId>
+            <artifactId>jackson-datatype-tinytypes</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
