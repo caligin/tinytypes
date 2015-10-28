@@ -17,7 +17,7 @@ public final class TinyTypesModule extends Module {
 
     @Override
     public Version version() {
-        return new Version(1, 0, 0, "SNAPSHOT", "tech.anima", "tinytypes-jackson");
+        return new Version(1, 1, 0, "SNAPSHOT", "tech.anima", "jackson-datatype-tinytypes");
     }
 
     @Override
