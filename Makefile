@@ -3,16 +3,16 @@
 all: jackson jersey
 
 jackson: meta
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -f ../component.mk
 
 jersey: meta
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -f ../component.mk
 
 meta: testing
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -f ../component.mk
 
 testing: tinytypes
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -f ../component.mk
 
 tinytypes:
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -f ../component.mk
