@@ -20,18 +20,10 @@ this implies:
 
 ## Defining a TinyType
 
-Add jitpack repository (Maven):
-```
-<repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-</repository>
-```
-
 Add tinytypes dep (Maven):
 ```
 <dependency>
-    <groupId>com.github.caligin.tinytypes</groupId>
+    <groupId>tech.anima</groupId>
     <artifactId>tinytypes</artifactId>
     <version>1.1.0</version>
 </dependency>
@@ -53,18 +45,10 @@ public class SomeKindOfId extends StringTinyType {
 
 ## Use with Jackson
 
-Add jitpack repository (Maven):
-```
-<repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-</repository>
-```
-
 Add jackson dep (Maven):
 ```
 <dependency>
-    <groupId>com.github.caligin.tinytypes</groupId>
+    <groupId>tech.anima</groupId>
     <artifactId>jackson-datatype-tinytypes</artifactId>
     <version>1.1.0</version>
 </dependency>
@@ -84,18 +68,10 @@ objectMapper.readValue("ag7weq", SomeKindOfId.class); // SomeKindOfId#ag7weq
 
 ## Use with Jersey
 
-Add jitpack repository (Maven):
-```
-<repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-</repository>
-```
-
 Add jersey dep (Maven):
 ```
 <dependency>
-    <groupId>com.github.caligin.tinytypes</groupId>
+    <groupId>tech.anima</groupId>
     <artifactId>tinytypes-jersey</artifactId>
     <version>1.1.0</version>
 </dependency>
