@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>tech.anima</groupId>
     <artifactId>tinytypes-jersey</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-meta</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-testing</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

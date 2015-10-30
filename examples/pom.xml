@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>tech.anima</groupId>
     <artifactId>tinytypes-examples</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>0.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -42,17 +42,17 @@
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>jackson-datatype-tinytypes</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-jersey</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-testing</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
