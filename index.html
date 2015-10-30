@@ -59,6 +59,23 @@
 <h2>
 <a id="defining-a-tinytype" class="anchor" href="#defining-a-tinytype" aria-hidden="true"><span class="octicon octicon-link"></span></a>Defining a TinyType</h2>
 
+<p>Add jitpack repository (Maven):</p>
+
+<pre><code>&lt;repository&gt;
+    &lt;id&gt;jitpack.io&lt;/id&gt;
+    &lt;url&gt;https://jitpack.io&lt;/url&gt;
+&lt;/repository&gt;
+</code></pre>
+
+<p>Add tinytypes dep (Maven):</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.github.caligin.tinytypes&lt;/groupId&gt;
+    &lt;artifactId&gt;tinytypes&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
 <ul>
 <li>Extend one of the base TinyTypes classes</li>
 <li>It must not be <code>abstract</code>
@@ -91,8 +108,8 @@
 
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;com.github.caligin.tinytypes&lt;/groupId&gt;
-    &lt;artifactId&gt;tinytypes-jackson&lt;/artifactId&gt;
-    &lt;version&gt;1.0.1&lt;/version&gt;
+    &lt;artifactId&gt;jackson-datatype-tinytypes&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 
@@ -124,7 +141,7 @@ objectMapper.readValue("ag7weq", SomeKindOfId.class); // SomeKindOfId#ag7weq
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;com.github.caligin.tinytypes&lt;/groupId&gt;
     &lt;artifactId&gt;tinytypes-jersey&lt;/artifactId&gt;
-    &lt;version&gt;1.0.1&lt;/version&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 
