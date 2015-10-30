@@ -33,7 +33,7 @@ Add tinytypes dep (Maven):
 <dependency>
     <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>tinytypes</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -66,7 +66,7 @@ Add jackson dep (Maven):
 <dependency>
     <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>jackson-datatype-tinytypes</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -97,7 +97,7 @@ Add jersey dep (Maven):
 <dependency>
     <groupId>com.github.caligin.tinytypes</groupId>
     <artifactId>tinytypes-jersey</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
