@@ -32,7 +32,7 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class DropwizardIntegrationTest {
+public class DropwizardResourcesTest {
 
     public static ResourceSpy spy = new ResourceSpy();
 
