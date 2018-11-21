@@ -41,17 +41,17 @@
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-meta</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.5.1</version>
+            <version>2.9.7</version>
         </dependency>
         <dependency>
             <groupId>tech.anima</groupId>
             <artifactId>tinytypes-testing</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -7,14 +7,13 @@ import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardClientRule;
+import javax.validation.Validation;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.glassfish.jersey.server.internal.inject.ConfiguredValidator;
-import org.hibernate.validator.internal.engine.ValidatorImpl;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.experimental.runners.Enclosed;
@@ -31,7 +30,7 @@ public class DropwizardJerseyClientTest {
     @RunWith(Theories.class)
     public static class JsonBodySerializationTest {
 
-        private final Environment dwEnvironment = new Environment("env", new ObjectMapper().registerModule(new TinyTypesModule()),null, new MetricRegistry(), this.getClass().getClassLoader());
+        private final Environment dwEnvironment = new Environment("env", new ObjectMapper().registerModule(new TinyTypesModule()), Validation.buildDefaultValidatorFactory().getValidator(), new MetricRegistry(), this.getClass().getClassLoader());
         @ClassRule
         public static final DropwizardClientRule deserializedEcho = new DropwizardClientRule(new DeserializedEchoResource());
         @DataPoints
