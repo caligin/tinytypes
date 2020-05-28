@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 14
-        server-id: maven
+        server-id: ossrh
         server-username: MAVEN_USERNAME
         server-password: MAVEN_CENTRAL_TOKEN
     - name: Set up GPG
