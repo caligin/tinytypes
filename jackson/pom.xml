@@ -20,8 +20,8 @@
     <developers>
         <developer>
             <id>caligin</id>
-            <name>Fulvio Meden</name>
-            <email>caligin35+tt@gmail.com</email>
+            <name>Foo Meden</name>
+            <email>tinytypes@anima.tech</email>
         </developer>
     </developers>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.9.3</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>tech.anima</groupId>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

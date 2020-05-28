@@ -20,8 +20,8 @@
     <developers>
         <developer>
             <id>caligin</id>
-            <name>Fulvio Meden</name>
-            <email>caligin35+tt@gmail.com</email>
+            <name>Foo Meden</name>
+            <email>tinytypes@anima.tech</email>
         </developer>
     </developers>
 
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
