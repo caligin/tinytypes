@@ -1,0 +1,35 @@
+
+name: Publish release on Maven Central
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+        server-id: maven
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_CENTRAL_TOKEN
+    - name: Set up GPG
+      run: |
+        echo "$GPG_PRIVATE_KEY" > private.asc
+        gpg --import --batch private.asc
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+    - name: Publish to Central with signature
+      run: mvn -B -Pdeploy -Dgpg.passphrase=${GPG_PASSPHRASE} clean deploy
+      env:
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+

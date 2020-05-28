@@ -13,7 +13,7 @@
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://raw.githubusercontent.com/caligin/tinytypes/master/LICENSE</url>
+            <url>https://raw.githubusercontent.com/caligin/tinytypes/master/LICENSE.md</url>
         </license>
     </licenses>
 
@@ -37,6 +37,21 @@
         <module>meta</module>
         <module>jackson</module>
         <module>jersey</module>
-        <module>examples</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>examples</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>deploy</id>
+        </profile>
+    </profiles>
+
 </project>
