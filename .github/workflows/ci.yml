@@ -3,8 +3,22 @@ name: ci build and test
 on:
   push:
     branches: [ main ]
+    paths:
+      - "tinytypes/**"
+      - "testing/**"
+      - "meta/**"
+      - "jackson/**"
+      - "jersey/**"
+      - "pom.xml"
   pull_request:
     branches: [ main ]
+    paths:
+      - "tinytypes/**"
+      - "testing/**"
+      - "meta/**"
+      - "jackson/**"
+      - "jersey/**"
+      - "pom.xml"
 
 jobs:
   build:

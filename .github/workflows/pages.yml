@@ -3,6 +3,8 @@ name: static site CI-CD
 on:
   push:
     branches: [ main ]
+    paths:
+      - "site/**"
 
 concurrency:
   group: production
