@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>TinyTypes by caligin</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>TinyTypes</h1>
+        <h2>Typed wrappers on native values + framework integrations.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/caligin/tinytypes/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/caligin/tinytypes/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/caligin/tinytypes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="tinytypes" class="anchor" href="#tinytypes" aria-hidden="true"><span class="octicon octicon-link"></span></a>TinyTypes</h1>
+
+<p><a href="https://travis-ci.org/caligin/tinytypes"><img src="https://travis-ci.org/caligin/tinytypes.svg?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a id="what" class="anchor" href="#what" aria-hidden="true"><span class="octicon octicon-link"></span></a>What</h2>
+
+<p>Type safe wrappers on native types &amp;&amp; support for commonly used frameworks.</p>
+
+<p>See <a href="http://slides.com/caligin/tinytypes#/">my slides 'bout it</a>.</p>
+
+<h2>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Status</h2>
+
+<p>Supported libraries/frameworks:</p>
+
+<ul>
+<li>Jackson</li>
+<li>Jersey</li>
+</ul>
+
+<p>this implies:</p>
+
+<ul>
+<li>Dropwizard (resources only, only JSON mediaType)</li>
+</ul>
+
+<h2>
+<a id="defining-a-tinytype" class="anchor" href="#defining-a-tinytype" aria-hidden="true"><span class="octicon octicon-link"></span></a>Defining a TinyType</h2>
+
+<p>Add tinytypes dep (Maven):</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;tech.anima&lt;/groupId&gt;
+    &lt;artifactId&gt;tinytypes&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<ul>
+<li>Extend one of the base TinyTypes classes</li>
+<li>It must not be <code>abstract</code>
+</li>
+<li>Provide a constructor matching the one in the base class</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code>public class SomeKindOfId extends StringTinyType {
+    public SomeKindOfId(String value) {
+        super(value);
+        // ... additional validation or restrictions here
+    }
+}
+</code></pre>
+
+<h2>
+<a id="use-with-jackson" class="anchor" href="#use-with-jackson" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use with Jackson</h2>
+
+<p>Add jackson dep (Maven):</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;tech.anima&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-datatype-tinytypes&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Register module on ObjectMapper:</p>
+
+<pre><code>new ObjectMapper().registerModule(new TinyTypesModule())
+</code></pre>
+
+<p>Profit!</p>
+
+<pre><code>objectMapper.writeValueAsString(new SomeKindOfId("ag7weq")); // "ag7weq"
+
+objectMapper.readValue("ag7weq", SomeKindOfId.class); // SomeKindOfId#ag7weq
+</code></pre>
+
+<h2>
+<a id="use-with-jersey" class="anchor" href="#use-with-jersey" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use with Jersey</h2>
+
+<p>Add jersey dep (Maven):</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;tech.anima&lt;/groupId&gt;
+    &lt;artifactId&gt;tinytypes-jersey&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Register module on ObjectMapper:</p>
+
+<pre><code>new ObjectMapper().registerModule(new TinyTypesModule())
+</code></pre>
+
+<p>Register the ParamProvider:</p>
+
+<pre><code>.addProvider(TinyTypesParamProvider.class)
+</code></pre>
+
+<p>Register the HeaderDelegates:</p>
+
+<pre><code>JerseyResponseSupport.registerTinyTypes(
+        Samples.Str.class,
+        ... (other TTs here)
+);
+
+</code></pre>
+
+<p>Profit!</p>
+
+<p>(See tinytypes-examples test cases for more on how to use them with Jersey)</p>
+
+<h2>
+<a id="planned-for-the-future" class="anchor" href="#planned-for-the-future" aria-hidden="true"><span class="octicon octicon-link"></span></a>Planned for the future</h2>
+
+<ul>
+<li>Android Parchelable</li>
+<li>Hibernate</li>
+<li>Spring</li>
+<li>Xstream</li>
+</ul>
+
+<p>I won't prioritize until I have a real necessity to use, PRs are welcome.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
