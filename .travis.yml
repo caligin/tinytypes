@@ -1,8 +1,0 @@
-dist: xenial
-language: java
-jdk:
-  - openjdk10
-  - openjdk11
-script:
-  - mvn clean install
-sudo: false
