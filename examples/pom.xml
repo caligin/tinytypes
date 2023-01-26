@@ -73,7 +73,7 @@
             <!-- because java9 modules, will eventually be deprecated revisit this from time to time: https://github.com/dropwizard/dropwizard/issues/2318 -->
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
+            <version>2.3.1</version>
         </dependency>
         <dependency>
             <!-- because java9 modules, will eventually be deprecated revisit this from time to time: https://github.com/dropwizard/dropwizard/issues/2318 -->
