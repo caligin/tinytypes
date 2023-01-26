@@ -25,7 +25,7 @@ Add tinytypes dep (Maven):
 <dependency>
     <groupId>tech.anima</groupId>
     <artifactId>tinytypes</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -50,7 +50,7 @@ Add jackson dep (Maven):
 <dependency>
     <groupId>tech.anima</groupId>
     <artifactId>jackson-datatype-tinytypes</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ Add jersey dep (Maven):
 <dependency>
     <groupId>tech.anima</groupId>
     <artifactId>tinytypes-jersey</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
