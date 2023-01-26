@@ -1,0 +1,32 @@
+name: static site CI-CD
+
+on:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: production
+
+jobs:
+  build-deploy-cloudflare-pages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Publish to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build the site in the jekyll/builder container
+        run: |
+          docker run \
+          -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+          jekyll/builder:4.2.0 /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: tinytypes-anima-tech
+          directory: ${{ github.workspace }}/site
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

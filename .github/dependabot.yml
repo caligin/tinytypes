@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /examples
+    schedule:
+      interval: weekly
+  - package-ecosystem: maven
+    directory: /jackson
+    schedule:
+      interval: weekly
+  - package-ecosystem: maven
+    directory: /jersey
+    schedule:
+      interval: weekly
+  - package-ecosystem: maven
+    directory: /meta
+    schedule:
+      interval: weekly
+  - package-ecosystem: maven
+    directory: /testing
+    schedule:
+      interval: weekly
+  - package-ecosystem: maven
+    directory: /tinytypes
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
